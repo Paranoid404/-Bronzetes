@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet">
+<style>
+html,body{margin:0;padding:0;width:100%;background:#0B0912;font-family:'Outfit',system-ui,sans-serif;overflow-x:hidden}
+a{color:#F5F1E6}a:hover{color:#FFFFFF}
+input{font-family:'Outfit',system-ui,sans-serif;outline:none}
+input::placeholder{color:rgba(245,241,230,.4)}
+::-webkit-scrollbar{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes drift1{from{transform:translate(0,0) scale(1)}to{transform:translate(46px,34px) scale(1.15)}}
+@keyframes drift2{from{transform:translate(0,0) scale(1.1)}to{transform:translate(-40px,-30px) scale(1)}}
+@keyframes drift3{from{transform:translate(0,0)}to{transform:translate(30px,-40px)}}
+@keyframes shine{0%,100%{opacity:.32;transform:translate(-4%,-4%) scale(1)}50%{opacity:.55;transform:translate(3%,3%) scale(1.1)}}
+@keyframes restBackdropIn{from{opacity:0}to{opacity:1}}
+@keyframes restPanelIn{from{opacity:0;transform:translateY(28px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes restHalo{0%,100%{opacity:.35;transform:scale(.92)}50%{opacity:.85;transform:scale(1.08)}}
+@keyframes restHaloFast{0%,100%{opacity:.5;transform:scale(.95)}50%{opacity:1;transform:scale(1.12)}}
+@keyframes numPop{0%{opacity:.2;transform:scale(1.45)}55%{opacity:1;transform:scale(.94)}100%{transform:scale(1)}}
+</style>
+</helmet>
+<div style="background:#0B0912;box-sizing:border-box">
+<div data-screen-label="App Bronzetes" style="min-height:100vh;min-height:100dvh;width:100%;display:flex;flex-direction:column;background:#100D1A;color:#F5F1E6;font-family:'Outfit',system-ui,sans-serif;position:relative;overflow:hidden">
+
+<div style="position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none">
+  <div style="position:absolute;width:360px;height:360px;border-radius:50%;background:rgba(255,255,255,.05);top:-90px;left:-100px;filter:blur(30px);animation:drift1 16s ease-in-out infinite alternate"></div>
+  <div style="position:absolute;width:420px;height:420px;border-radius:50%;background:rgba(255,255,255,.04);bottom:-120px;right:-130px;filter:blur(34px);animation:drift2 19s ease-in-out infinite alternate"></div>
+  <div style="position:absolute;width:280px;height:280px;border-radius:50%;background:rgba(255,255,255,.035);top:40%;right:-110px;filter:blur(32px);animation:drift3 14s ease-in-out infinite alternate"></div>
+</div>
+
+<sc-if value="{{ libLoading }}" hint-placeholder-val="{{ true }}">
+  <div data-screen-label="Carregando" style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px">
+    <div style="display:flex;flex-direction:column;align-items:center;gap:18px;padding:36px 40px;border-radius:30px;background:rgba(255,255,255,.08);backdrop-filter:blur(24px) saturate(180%);border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 18px 44px rgba(0,0,0,.4)">
+      <div style="font-size:26px;font-weight:800;color:#F5F1E6;letter-spacing:-0.5px">Bronzetes</div>
+      <div style="width:34px;height:34px;border-radius:50%;border:3px solid rgba(255,255,255,.14);border-top-color:#F5F1E6;animation:spin .8s linear infinite"></div>
+      <div style="font-size:13.5px;color:rgba(245,241,230,.6);text-align:center">Carregando biblioteca de exercícios…<br>1.324 movimentos com GIFs</div>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ libError }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Erro" style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:32px;text-align:center">
+    <div style="font-size:15px;color:rgba(245,241,230,.75)">Não foi possível carregar a biblioteca de exercícios.</div>
+    <button onClick="{{ onRetry }}" style="background:rgba(245,241,230,.95);border:1px solid rgba(255,255,255,.32);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 10px 28px rgba(0,0,0,.35);color:#1A1408;border-radius:22px;padding:12px 24px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer">Tentar novamente</button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Minhas fichas" style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:calc(24px + env(safe-area-inset-top)) 22px 12px;display:flex;align-items:flex-end;justify-content:space-between">
+      <div>
+        <div style="font-size:14px;font-weight:800;color:#F5F1E6;letter-spacing:0.4px">Bronzetes</div>
+        <div style="font-size:28px;font-weight:800;letter-spacing:-0.6px;margin-top:2px;text-shadow:0 2px 14px rgba(0,0,0,.35)">{{ homeTitle }}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px">
+        <sc-if value="{{ tabFichas }}" hint-placeholder-val="{{ true }}">
+          <button onClick="{{ onNewFicha }}" style="width:46px;height:46px;border-radius:50%;background:rgba(245,241,230,.95);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.4);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 10px 26px rgba(0,0,0,.4);transition:transform .15s ease" style-active="transform:scale(0.9)">
+            <svg width="18" height="18" viewBox="0 0 18 18"><path d="M9 2v14M2 9h14" stroke="#1A1408" stroke-width="2.6" stroke-linecap="round"></path></svg>
+          </button>
+        </sc-if>
+        <button onClick="{{ onOpenProfile }}" style="width:46px;height:46px;border-radius:50%;overflow:hidden;background:rgba(255,255,255,.1);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.28);cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 20px rgba(0,0,0,.35);transition:transform .15s ease;padding:0" style-active="transform:scale(0.9)">{{ headerAvatar }}</button>
+      </div>
+    </div>
+
+    <sc-if value="{{ tabFichas }}" hint-placeholder-val="{{ true }}">
+      <div style="flex:1;overflow:auto;padding:8px 22px 150px">
+
+        <sc-if value="{{ layoutCards }}" hint-placeholder-val="{{ true }}">
+          <sc-for list="{{ fichaCards }}" as="f">
+            <div style="position:relative;overflow:hidden;background:rgba(255,255,255,.075);backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(255,255,255,.15);border-radius:26px;padding:16px;margin-bottom:16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 14px 34px rgba(0,0,0,.3)">
+              <div style="position:absolute;width:38%;height:26%;top:0;left:0;border-radius:50%;background:rgba(255,255,255,.6);filter:blur(22px);opacity:.14;mix-blend-mode:screen;animation:shine 9s ease-in-out infinite;pointer-events:none"></div>
+              <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+                <div style="min-width:0">
+                  <div style="font-size:18px;font-weight:700;letter-spacing:-0.3px">{{ f.name }}</div>
+                  <div style="font-size:13px;color:rgba(245,241,230,.55);margin-top:2px">{{ f.meta }}</div>
+                </div>
+                <button onClick="{{ f.onEdit }}" style="width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.25);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                  <svg width="14" height="14" viewBox="0 0 14 14"><path d="M9.5 1.5l3 3L5 12H2v-3l7.5-7.5z" fill="none" stroke="rgba(245,241,230,.7)" stroke-width="1.5" stroke-linejoin="round"></path></svg>
+                </button>
+              </div>
+              <div style="display:flex;gap:8px;margin:12px 0 14px">{{ f.thumbStrip }}</div>
+              <button onClick="{{ f.onStart }}" style="width:100%;height:48px;border-radius:24px;background:rgba(245,241,230,.95);border:1px solid rgba(255,255,255,.35);cursor:pointer;font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;color:#1A1408;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 8px 22px rgba(0,0,0,.3);transition:transform .15s ease,box-shadow .15s ease" style-active="transform:scale(0.96);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 4px 12px rgba(0,0,0,.35)">
+                <svg width="12" height="14" viewBox="0 0 12 14"><path d="M1 1.5v11l10-5.5-10-5.5z" fill="#1A1408"></path></svg>
+                Iniciar treino
+              </button>
+            </div>
+          </sc-for>
+        </sc-if>
+
+        <sc-if value="{{ layoutList }}" hint-placeholder-val="{{ false }}">
+          <sc-for list="{{ fichaCards }}" as="f">
+            <div onClick="{{ f.onStart }}" style="background:rgba(255,255,255,.075);backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(255,255,255,.15);border-radius:24px;padding:13px 14px;margin-bottom:12px;display:flex;align-items:center;gap:13px;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 10px 26px rgba(0,0,0,.28)">
+              <div style="width:48px;height:48px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:800;color:#F5F1E6;flex-shrink:0">{{ f.letter }}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:16px;font-weight:700">{{ f.name }}</div>
+                <div style="font-size:12.5px;color:rgba(245,241,230,.55);margin-top:1px">{{ f.meta }}</div>
+              </div>
+              <button onClick="{{ f.onEditStop }}" style="width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.25);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="13" height="13" viewBox="0 0 14 14"><path d="M9.5 1.5l3 3L5 12H2v-3l7.5-7.5z" fill="none" stroke="rgba(245,241,230,.7)" stroke-width="1.5" stroke-linejoin="round"></path></svg>
+              </button>
+              <div style="width:40px;height:40px;border-radius:50%;background:rgba(245,241,230,.95);border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 16px rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+                <svg width="11" height="13" viewBox="0 0 12 14"><path d="M1 1.5v11l10-5.5-10-5.5z" fill="#1A1408"></path></svg>
+              </div>
+            </div>
+          </sc-for>
+        </sc-if>
+
+        <sc-if value="{{ layoutCovers }}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+            <sc-for list="{{ fichaCards }}" as="f">
+              <div onClick="{{ f.onStart }}" style="position:relative;border-radius:24px;overflow:hidden;background:#fff;aspect-ratio:0.82;cursor:pointer;border:1px solid rgba(255,255,255,.22);box-shadow:0 14px 30px rgba(0,0,0,.35)">
+                {{ f.coverEl }}
+                <button onClick="{{ f.onEditStop }}" style="position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(20,16,30,.4);backdrop-filter:blur(14px) saturate(160%);border:1px solid rgba(255,255,255,.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.3);cursor:pointer;display:flex;align-items:center;justify-content:center">
+                  <svg width="12" height="12" viewBox="0 0 14 14"><path d="M9.5 1.5l3 3L5 12H2v-3l7.5-7.5z" fill="none" stroke="rgba(245,241,230,.9)" stroke-width="1.5" stroke-linejoin="round"></path></svg>
+                </button>
+                <div style="position:absolute;left:8px;right:8px;bottom:8px;padding:10px 12px;border-radius:17px;background:rgba(22,17,34,.42);backdrop-filter:blur(18px) saturate(170%);border:1px solid rgba(255,255,255,.24);box-shadow:inset 0 1px 0 rgba(255,255,255,.3)">
+                  <div style="font-size:14px;font-weight:700;line-height:1.2;text-shadow:0 1px 6px rgba(0,0,0,.4)">{{ f.name }}</div>
+                  <div style="font-size:11px;color:#F5F1E6;font-weight:600;margin-top:2px">{{ f.metaShort }} ▸</div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+
+        <sc-if value="{{ noFichas }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:70px 20px;color:rgba(245,241,230,.5);font-size:14px">Nenhuma ficha ainda.<br>Toque em + para criar a primeira.</div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ tabHist }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;overflow:auto;padding:8px 22px 150px">
+        <sc-for list="{{ histRows }}" as="h" hint-placeholder-count="2">
+          <div style="background:rgba(255,255,255,.075);backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(255,255,255,.15);border-radius:22px;padding:14px 16px;margin-bottom:12px;display:flex;align-items:center;gap:14px;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 10px 26px rgba(0,0,0,.28)">
+            <div style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="18" height="18" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="#F5F1E6" stroke-width="1.8"></circle><path d="M10 5.5V10l3 2" fill="none" stroke="#F5F1E6" stroke-width="1.8" stroke-linecap="round"></path></svg>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:15px;font-weight:700">{{ h.name }}</div>
+              <div style="font-size:12.5px;color:rgba(245,241,230,.55);margin-top:1px">{{ h.date }}</div>
+            </div>
+            <div style="text-align:right;flex-shrink:0">
+              <div style="font-size:14px;font-weight:700;color:#F5F1E6">{{ h.time }}</div>
+              <div style="font-size:12px;color:rgba(245,241,230,.55)">{{ h.stats }}</div>
+            </div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noHist }}" hint-placeholder-val="{{ true }}">
+          <div style="text-align:center;padding:70px 20px;color:rgba(245,241,230,.5);font-size:14px">Nenhum treino concluído ainda.<br>Seu histórico aparecerá aqui.</div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ tabProg }}" hint-placeholder-val="{{ false }}">
+      <div style="flex:1;overflow:auto;padding:8px 22px 150px">
+        <div style="font-size:12.5px;color:rgba(245,241,230,.5);margin:0 2px 14px;line-height:1.4">Evolução da carga por exercício ao longo das semanas.</div>
+        <sc-for list="{{ progRows }}" as="p" hint-placeholder-count="4">
+          <div style="background:rgba(255,255,255,.075);backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(255,255,255,.15);border-radius:22px;padding:14px 15px;margin-bottom:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 10px 26px rgba(0,0,0,.26)">
+            <div style="display:flex;align-items:center;gap:11px">
+              <div style="width:42px;height:42px;border-radius:12px;background:#fff;overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.3)">{{ p.thumbEl }}</div>
+              <div style="flex:1;min-width:0">
+                <div style="font-size:14px;font-weight:700;line-height:1.2;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ p.name }}</div>
+                <div style="font-size:11.5px;color:rgba(245,241,230,.5);margin-top:1px">{{ p.sessions }}</div>
+              </div>
+              <div style="text-align:right;flex-shrink:0">
+                <div style="font-size:16px;font-weight:800;color:#F5F1E6">{{ p.current }}</div>
+                <div style="font-size:11.5px;font-weight:700;color:{{ p.deltaColor }}">{{ p.arrow }} {{ p.deltaLabel }}</div>
+              </div>
+            </div>
+            <div style="margin-top:12px">{{ p.chart }}</div>
+          </div>
+        </sc-for>
+        <sc-if value="{{ noProg }}" hint-placeholder-val="{{ false }}">
+          <div style="text-align:center;padding:70px 20px;color:rgba(245,241,230,.5);font-size:14px">Sem dados de carga ainda.<br>Marque séries com carga nos treinos<br>para acompanhar sua evolução.</div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <div style="position:absolute;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom));z-index:40;display:flex;gap:4px;padding:5px;border-radius:32px;overflow:hidden;background:rgba(255,255,255,.095);backdrop-filter:blur(26px) saturate(190%);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 16px 38px rgba(0,0,0,.45)">
+      <div style="position:absolute;width:22%;height:60%;top:0;left:2%;border-radius:50%;background:rgba(255,255,255,.6);filter:blur(14px);opacity:.12;mix-blend-mode:screen;animation:shine 8s ease-in-out infinite;pointer-events:none"></div>
+      <button onClick="{{ onTabFichas }}" style="display:flex;align-items:center;gap:6px;height:44px;padding:0 13px;border-radius:24px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;background:{{ tabFichasBg }};box-shadow:{{ tabFichasShadow }};transition:background .25s,transform .15s ease" style-active="transform:scale(0.94)">
+        <svg width="18" height="18" viewBox="0 0 22 22"><path d="M3 5.5h16M3 11h16M3 16.5h10" stroke="{{ tabFichasFg }}" stroke-width="2.2" stroke-linecap="round"></path></svg>
+        <span style="font-size:13px;font-weight:700;color:{{ tabFichasFg }}">Fichas</span>
+      </button>
+      <button onClick="{{ onTabProg }}" style="display:flex;align-items:center;gap:6px;height:44px;padding:0 13px;border-radius:24px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;background:{{ tabProgBg }};box-shadow:{{ tabProgShadow }};transition:background .25s,transform .15s ease" style-active="transform:scale(0.94)">
+        <svg width="18" height="18" viewBox="0 0 22 22"><path d="M3 15l5-5 4 3 6-8" fill="none" stroke="{{ tabProgFg }}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+        <span style="font-size:13px;font-weight:700;color:{{ tabProgFg }}">Progresso</span>
+      </button>
+      <button onClick="{{ onTabHist }}" style="display:flex;align-items:center;gap:6px;height:44px;padding:0 13px;border-radius:24px;border:none;cursor:pointer;font-family:'Outfit',sans-serif;background:{{ tabHistBg }};box-shadow:{{ tabHistShadow }};transition:background .25s,transform .15s ease" style-active="transform:scale(0.94)">
+        <svg width="18" height="18" viewBox="0 0 22 22"><circle cx="11" cy="11" r="8" fill="none" stroke="{{ tabHistFg }}" stroke-width="2.2"></circle><path d="M11 6.5V11l3.2 2" fill="none" stroke="{{ tabHistFg }}" stroke-width="2.2" stroke-linecap="round"></path></svg>
+        <span style="font-size:13px;font-weight:700;color:{{ tabHistFg }}">Histórico</span>
+      </button>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isEdit }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Editar ficha" style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:calc(24px + env(safe-area-inset-top)) 22px 10px;display:flex;align-items:center;gap:12px">
+      <button onClick="{{ onBackHome }}" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);backdrop-filter:blur(18px) saturate(170%);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.28);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s ease" style-active="transform:scale(0.9)">
+        <svg width="10" height="16" viewBox="0 0 10 16"><path d="M8.5 1.5L2 8l6.5 6.5" fill="none" stroke="#F5F1E6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <input value="{{ editName }}" onChange="{{ onEditName }}" placeholder="Nome da ficha" style="flex:1;min-width:0;background:rgba(255,255,255,.06);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.14);border-radius:16px;font-size:19px;font-weight:700;color:#F5F1E6;padding:9px 14px;letter-spacing:-0.3px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)">
+      <button onClick="{{ onDeleteFicha }}" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.08);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.18);box-shadow:inset 0 1px 0 rgba(255,255,255,.2);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+        <svg width="14" height="15" viewBox="0 0 14 15"><path d="M1.5 3.5h11M5 3.5V2h4v1.5M3 3.5l.8 10h6.4l.8-10" fill="none" stroke="#F5F1E6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+    </div>
+    <div style="font-size:12.5px;color:rgba(245,241,230,.5);padding:0 24px 10px">{{ editMeta }}</div>
+    <div style="flex:1;overflow:auto;padding:4px 22px 40px">
+      <sc-for list="{{ editRows }}" as="r">
+        <div style="background:rgba(255,255,255,.065);backdrop-filter:blur(20px) saturate(175%);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:12px;margin-bottom:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 10px 24px rgba(0,0,0,.26)">
+          <div style="display:flex;gap:12px;align-items:center">
+            <div style="width:52px;height:52px;border-radius:16px;background:#fff;overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.3)">{{ r.thumbEl }}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:14.5px;font-weight:600;line-height:1.25;text-transform:capitalize">{{ r.name }}</div>
+              <div style="font-size:12px;color:rgba(245,241,230,.5);margin-top:1px">{{ r.sub }}</div>
+            </div>
+            <button onClick="{{ r.onRemove }}" style="width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.2);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0">
+              <svg width="10" height="10" viewBox="0 0 10 10"><path d="M1 1l8 8M9 1l-8 8" stroke="rgba(245,241,230,.6)" stroke-width="1.8" stroke-linecap="round"></path></svg>
+            </button>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:11px">
+            <div style="flex:1;background:rgba(10,8,16,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:7px 10px">
+              <div style="font-size:9.5px;font-weight:700;letter-spacing:0.8px;color:rgba(245,241,230,.45);text-transform:uppercase">Séries</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px">
+                <button onClick="{{ r.onSetsDown }}" style="width:22px;height:22px;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1">−</button>
+                <span style="font-size:15px;font-weight:700">{{ r.sets }}</span>
+                <button onClick="{{ r.onSetsUp }}" style="width:22px;height:22px;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1">+</button>
+              </div>
+            </div>
+            <div style="flex:1;background:rgba(10,8,16,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:7px 10px">
+              <div style="font-size:9.5px;font-weight:700;letter-spacing:0.8px;color:rgba(245,241,230,.45);text-transform:uppercase">Reps</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px">
+                <button onClick="{{ r.onRepsDown }}" style="width:22px;height:22px;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1">−</button>
+                <span style="font-size:15px;font-weight:700">{{ r.reps }}</span>
+                <button onClick="{{ r.onRepsUp }}" style="width:22px;height:22px;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1">+</button>
+              </div>
+            </div>
+            <div style="flex:1.2;background:rgba(10,8,16,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:7px 10px">
+              <div style="font-size:9.5px;font-weight:700;letter-spacing:0.8px;color:rgba(245,241,230,.45);text-transform:uppercase">Descanso</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-top:2px">
+                <button onClick="{{ r.onRestDown }}" style="width:22px;height:22px;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1">−</button>
+                <span style="font-size:15px;font-weight:700">{{ r.restLabel }}</span>
+                <button onClick="{{ r.onRestUp }}" style="width:22px;height:22px;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </sc-for>
+      <button onClick="{{ onAddEx }}" style="width:100%;height:54px;border-radius:27px;background:rgba(255,255,255,.07);backdrop-filter:blur(16px);border:1.5px dashed rgba(255,255,255,.4);color:#F5F1E6;font-family:'Outfit',sans-serif;font-size:14.5px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.1)">
+        <svg width="14" height="14" viewBox="0 0 14 14"><path d="M7 1v12M1 7h12" stroke="#F5F1E6" stroke-width="2.2" stroke-linecap="round"></path></svg>
+        Adicionar exercício
+      </button>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isPicker }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Biblioteca de exercícios" style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:calc(24px + env(safe-area-inset-top)) 22px 10px;display:flex;align-items:center;gap:12px">
+      <button onClick="{{ onPickerBack }}" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);backdrop-filter:blur(18px) saturate(170%);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.28);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s ease" style-active="transform:scale(0.9)">
+        <svg width="10" height="16" viewBox="0 0 10 16"><path d="M8.5 1.5L2 8l6.5 6.5" fill="none" stroke="#F5F1E6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div>
+        <div style="font-size:19px;font-weight:800;letter-spacing:-0.3px">{{ pickerTitle }}</div>
+        <div style="font-size:12px;color:rgba(245,241,230,.5)">{{ pickerCount }}</div>
+      </div>
+    </div>
+    <div style="padding:6px 22px 10px">
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,.18);border-radius:23px;padding:0 16px;height:46px;box-shadow:inset 0 1px 0 rgba(255,255,255,.22)">
+        <svg width="15" height="15" viewBox="0 0 15 15"><circle cx="6.5" cy="6.5" r="5" fill="none" stroke="rgba(245,241,230,.45)" stroke-width="1.8"></circle><path d="M10.5 10.5L14 14" stroke="rgba(245,241,230,.45)" stroke-width="1.8" stroke-linecap="round"></path></svg>
+        <input value="{{ pickerQuery }}" onChange="{{ onPickerQuery }}" placeholder="Buscar exercício…" style="flex:1;background:none;border:none;font-size:14.5px;color:#F5F1E6">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;overflow-x:auto;padding:2px 22px 12px;flex-shrink:0">
+      <sc-for list="{{ catChips }}" as="c" hint-placeholder-count="5">
+        <button onClick="{{ c.onPick }}" style="flex-shrink:0;height:34px;padding:0 15px;border-radius:17px;border:1px solid {{ c.border }};background:{{ c.bg }};backdrop-filter:blur(14px) saturate(160%);color:{{ c.fg }};font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;box-shadow:inset 0 1px 0 rgba(255,255,255,.18)">{{ c.label }}</button>
+      </sc-for>
+    </div>
+    <sc-if value="{{ showLegTargets }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;gap:6px;overflow-x:auto;padding:0 22px 12px;flex-shrink:0">
+        <sc-for list="{{ legTargetChips }}" as="lt" hint-placeholder-count="6">
+          <button onClick="{{ lt.onPick }}" style="flex-shrink:0;height:28px;padding:0 12px;border-radius:14px;border:1px solid {{ lt.border }};background:{{ lt.bg }};color:{{ lt.fg }};font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer">{{ lt.label }}</button>
+        </sc-for>
+      </div>
+    </sc-if>
+    <div style="flex:1;overflow:auto;padding:0 22px 40px">
+      <button onClick="{{ onOpenCustom }}" style="width:100%;display:flex;align-items:center;gap:12px;padding:11px 12px;margin:4px 0 6px;border-radius:16px;background:rgba(255,255,255,.06);border:1px dashed rgba(255,255,255,.28);cursor:pointer;transition:transform .15s ease" style-active="transform:scale(0.98)">
+        <div style="width:44px;height:44px;border-radius:13px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="18" height="18" viewBox="0 0 20 14"><rect x="1" y="1" width="18" height="12" rx="3" fill="none" stroke="#F5F1E6" stroke-width="1.6"></rect><path d="M8 4.5l4 2.5-4 2.5z" fill="#F5F1E6"></path></svg>
+        </div>
+        <div style="flex:1;min-width:0;text-align:left">
+          <div style="font-size:14.5px;font-weight:700;color:#F5F1E6">Criar exercício personalizado</div>
+          <div style="font-size:12px;color:rgba(245,241,230,.5);margin-top:1px">Com vídeo do YouTube</div>
+        </div>
+        <div style="width:30px;height:30px;border-radius:50%;background:rgba(245,241,230,.95);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="11" height="11" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="#1A1408" stroke-width="2.2" stroke-linecap="round"></path></svg>
+        </div>
+      </button>
+      <sc-for list="{{ pickerRows }}" as="p">
+        <div onClick="{{ p.onPick }}" style="display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer">
+          <div style="width:52px;height:52px;border-radius:16px;background:#fff;overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.3)">{{ p.thumbEl }}</div>
+          <div style="flex:1;min-width:0">
+            <div style="font-size:14.5px;font-weight:600;line-height:1.25;text-transform:capitalize">{{ p.name }}</div>
+            <div style="font-size:12px;color:rgba(245,241,230,.5);margin-top:1px">{{ p.sub }}</div>
+          </div>
+          <div style="width:30px;height:30px;border-radius:50%;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+            <svg width="11" height="11" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="#F5F1E6" stroke-width="2" stroke-linecap="round"></path></svg>
+          </div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ pickerMore }}" hint-placeholder-val="{{ false }}">
+        <div style="text-align:center;padding:14px;font-size:12px;color:rgba(245,241,230,.45)">{{ pickerMoreLabel }}</div>
+      </sc-if>
+      <sc-if value="{{ pickerEmpty }}" hint-placeholder-val="{{ false }}">
+        <div style="text-align:center;padding:50px 20px;font-size:14px;color:rgba(245,241,230,.5)">Nenhum exercício encontrado.</div>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isCustom }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Exercício personalizado" style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:calc(24px + env(safe-area-inset-top)) 22px 10px;display:flex;align-items:center;gap:12px">
+      <button onClick="{{ onCustomBack }}" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);backdrop-filter:blur(18px) saturate(170%);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.28);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s ease" style-active="transform:scale(0.9)">
+        <svg width="10" height="16" viewBox="0 0 10 16"><path d="M8.5 1.5L2 8l6.5 6.5" fill="none" stroke="#F5F1E6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div style="font-size:19px;font-weight:800;letter-spacing:-0.3px">Exercício personalizado</div>
+    </div>
+    <div style="flex:1;overflow:auto;padding:8px 22px 40px">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.8px;color:rgba(245,241,230,.45);text-transform:uppercase;margin:6px 2px 6px">Nome do exercício</div>
+      <input value="{{ cName }}" onChange="{{ onCustomName }}" placeholder="Ex: Rosca inversa na polia" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.08);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16);border-radius:16px;font-size:15px;font-weight:600;color:#F5F1E6;padding:13px 15px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)">
+      <div style="font-size:11px;font-weight:700;letter-spacing:0.8px;color:rgba(245,241,230,.45);text-transform:uppercase;margin:18px 2px 6px">Vídeo do YouTube <span style="font-weight:500;text-transform:none;letter-spacing:0;color:rgba(245,241,230,.35)">(opcional)</span></div>
+      <div style="display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16);border-radius:16px;padding:0 15px;height:48px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)">
+        <svg width="18" height="14" viewBox="0 0 20 14" style="flex-shrink:0"><rect x="1" y="1" width="18" height="12" rx="3" fill="none" stroke="rgba(245,241,230,.55)" stroke-width="1.6"></rect><path d="M8 4.5l4 2.5-4 2.5z" fill="rgba(245,241,230,.55)"></path></svg>
+        <input value="{{ cUrl }}" onChange="{{ onCustomUrl }}" placeholder="Cole o link do YouTube" style="flex:1;min-width:0;background:none;border:none;font-size:14px;color:#F5F1E6">
+      </div>
+      <div style="margin-top:16px">{{ cPreviewEl }}</div>
+    </div>
+    <div style="padding:6px 22px 46px">
+      <button onClick="{{ onCustomSave }}" disabled="{{ cSaveDisabled }}" style="width:100%;height:54px;border-radius:27px;background:{{ cSaveBg }};border:1px solid rgba(255,255,255,.4);cursor:{{ cSaveCursor }};font-family:'Outfit',sans-serif;font-size:15px;font-weight:800;color:#1A1408;opacity:{{ cSaveOpacity }};box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 12px 30px rgba(0,0,0,.4);transition:transform .15s ease" style-active="transform:scale(0.97)">Adicionar à ficha</button>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ videoOpen }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Vídeo" style="position:absolute;inset:0;z-index:120;background:rgba(6,5,10,.82);backdrop-filter:blur(20px) saturate(150%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;box-sizing:border-box;animation:restBackdropIn .28s ease-out both" onClick="{{ onCloseVideo }}">
+    <div style="width:100%;max-width:340px;aspect-ratio:16/9;border-radius:20px;overflow:hidden;border:1px solid rgba(255,255,255,.2);box-shadow:0 24px 60px rgba(0,0,0,.6);animation:restPanelIn .4s cubic-bezier(.22,1,.36,1) both">
+      <iframe src="{{ videoSrc }}" width="100%" height="100%" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen style="border:0;display:block"></iframe>
+    </div>
+    <button onClick="{{ onCloseVideo }}" style="margin-top:20px;height:46px;padding:0 28px;border-radius:23px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.28);color:#F5F1E6;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:transform .15s ease" style-active="transform:scale(0.94)">Fechar</button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isProfile }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Perfil" style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;overflow:auto">
+    <div style="padding:calc(24px + env(safe-area-inset-top)) 22px 10px;display:flex;align-items:center;gap:12px">
+      <button onClick="{{ onProfileBack }}" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);backdrop-filter:blur(18px) saturate(170%);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.28);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s ease" style-active="transform:scale(0.9)">
+        <svg width="10" height="16" viewBox="0 0 10 16"><path d="M8.5 1.5L2 8l6.5 6.5" fill="none" stroke="#F5F1E6" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </button>
+      <div style="font-size:19px;font-weight:800;letter-spacing:-0.3px">Perfil</div>
+    </div>
+    <div style="flex:1;padding:14px 24px 40px;display:flex;flex-direction:column;align-items:center">
+      <label style="position:relative;width:132px;height:132px;border-radius:50%;cursor:pointer;display:block;flex-shrink:0">
+        <div style="width:132px;height:132px;border-radius:50%;overflow:hidden;background:rgba(255,255,255,.08);backdrop-filter:blur(18px) saturate(180%);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 14px 34px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center">{{ profileAvatarBig }}</div>
+        <div style="position:absolute;right:2px;bottom:2px;width:38px;height:38px;border-radius:50%;background:rgba(245,241,230,.96);border:2px solid #14121C;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 16px rgba(0,0,0,.4)">
+          <svg width="17" height="17" viewBox="0 0 20 20"><path d="M3 6.5h3l1.2-2h5.6L14 6.5h3v10H3z" fill="none" stroke="#1A1408" stroke-width="1.7" stroke-linejoin="round"></path><circle cx="10" cy="11" r="3" fill="none" stroke="#1A1408" stroke-width="1.7"></circle></svg>
+        </div>
+        <input type="file" accept="image/*" onChange="{{ onPhotoPick }}" style="position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer">
+      </label>
+      <div style="font-size:12.5px;color:rgba(245,241,230,.45);margin-top:12px">Toque na foto para alterar</div>
+
+      <div style="width:100%;font-size:11px;font-weight:700;letter-spacing:0.8px;color:rgba(245,241,230,.45);text-transform:uppercase;margin:26px 2px 6px">Nome</div>
+      <input value="{{ profileName }}" onChange="{{ onProfileName }}" placeholder="Seu nome" style="width:100%;box-sizing:border-box;background:rgba(255,255,255,.08);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.16);border-radius:16px;font-size:16px;font-weight:600;color:#F5F1E6;padding:14px 16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.14)">
+
+      <div style="width:100%;display:flex;gap:10px;margin-top:22px">
+        <div style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:15px 10px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.16)">
+          <div style="font-size:22px;font-weight:800;color:#F5F1E6">{{ profTreinos }}</div>
+          <div style="font-size:10.5px;font-weight:600;letter-spacing:0.5px;color:rgba(245,241,230,.5);text-transform:uppercase;margin-top:2px">Treinos</div>
+        </div>
+        <div style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:15px 10px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.16)">
+          <div style="font-size:22px;font-weight:800;color:#F5F1E6">{{ profFichas }}</div>
+          <div style="font-size:10.5px;font-weight:600;letter-spacing:0.5px;color:rgba(245,241,230,.5);text-transform:uppercase;margin-top:2px">Fichas</div>
+        </div>
+        <div style="flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:15px 10px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.16)">
+          <div style="font-size:22px;font-weight:800;color:#F5F1E6">{{ profHoras }}</div>
+          <div style="font-size:10.5px;font-weight:600;letter-spacing:0.5px;color:rgba(245,241,230,.5);text-transform:uppercase;margin-top:2px">Horas</div>
+        </div>
+      </div>
+      <sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}">
+        <button onClick="{{ onRemovePhoto }}" style="margin-top:20px;height:44px;padding:0 22px;border-radius:22px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.18);color:rgba(245,241,230,.75);font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:700;cursor:pointer;transition:transform .15s ease" style-active="transform:scale(0.95)">Remover foto</button>
+      </sc-if>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isWorkout }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Treino em andamento" style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:calc(24px + env(safe-area-inset-top)) 22px 0;display:flex;align-items:center;gap:12px">
+      <button onClick="{{ onAbandon }}" style="width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.1);backdrop-filter:blur(18px) saturate(170%);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.28);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .15s ease" style-active="transform:scale(0.9)">
+        <svg width="12" height="12" viewBox="0 0 12 12"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9" stroke="#F5F1E6" stroke-width="2" stroke-linecap="round"></path></svg>
+      </button>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:17px;font-weight:800;letter-spacing:-0.3px">{{ woName }}</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.1);backdrop-filter:blur(16px) saturate(170%);border:1px solid rgba(255,255,255,.22);border-radius:20px;padding:7px 13px;flex-shrink:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.2)">
+        <svg width="13" height="13" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8" fill="none" stroke="#F5F1E6" stroke-width="2"></circle><path d="M10 5.5V10l3 2" fill="none" stroke="#F5F1E6" stroke-width="2" stroke-linecap="round"></path></svg>
+        <span style="font-size:14px;font-weight:700;color:#F5F1E6;font-variant-numeric:tabular-nums">{{ woElapsed }}</span>
+      </div>
+    </div>
+    <div style="margin:14px 22px 10px;padding:11px 15px;border-radius:19px;background:rgba(255,255,255,.075);backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.2)">
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:rgba(245,241,230,.6);margin-bottom:7px">
+        <span style="font-weight:600">Progresso</span>
+        <span style="font-weight:700;color:#F5F1E6">{{ woProgressText }}</span>
+      </div>
+      <div style="height:7px;border-radius:4px;background:rgba(10,8,16,.4);overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.35)">
+        <div style="height:100%;border-radius:4px;background:#F5F1E6;box-shadow:0 0 10px rgba(255,255,255,.4);transition:width .35s ease;width:{{ woProgressPct }}"></div>
+      </div>
+    </div>
+    <div style="flex:1;overflow:auto;padding:4px 22px 130px">
+      <sc-for list="{{ woRows }}" as="w">
+        <div style="background:rgba(255,255,255,.065);backdrop-filter:blur(20px) saturate(175%);border:1px solid {{ w.border }};border-radius:24px;padding:12px;margin-bottom:12px;opacity:{{ w.opacity }};box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 10px 26px rgba(0,0,0,.26);transition:opacity .25s,border-color .25s">
+          <div style="display:flex;gap:12px">
+            <div style="width:74px;height:74px;border-radius:18px;background:#fff;overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.3)">{{ w.mediaEl }}</div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:15px;font-weight:700;line-height:1.25;text-transform:capitalize">{{ w.name }}</div>
+              <div style="font-size:12.5px;color:rgba(245,241,230,.55);margin-top:2px">{{ w.setsReps }}</div>
+              <div style="font-size:12px;color:#F5F1E6;font-weight:600;margin-top:3px">{{ w.lastLabel }}</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;align-self:center;gap:2px">
+              <div style="font-size:15px;font-weight:800;color:{{ w.setsCountColor }};font-variant-numeric:tabular-nums">{{ w.setsCountLabel }}</div>
+              <div style="font-size:9px;font-weight:700;letter-spacing:.8px;color:rgba(245,241,230,.4);text-transform:uppercase">séries</div>
+            </div>
+          </div>
+          <div style="display:flex;gap:6px;margin-top:12px;flex-wrap:wrap">
+            <sc-for list="{{ w.setPills }}" as="sp" hint-placeholder-count="4">
+              <button onClick="{{ sp.onTap }}" style="flex:1;min-width:44px;height:40px;border-radius:14px;border:1.5px solid {{ sp.border }};background:{{ sp.bg }};box-shadow:{{ sp.shadow }};cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:800;color:{{ sp.fg }};transition:all .18s ease" style-active="transform:scale(0.9)">{{ sp.content }}</button>
+            </sc-for>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:11px">
+            <div style="display:flex;align-items:center;gap:2px;background:rgba(10,8,16,.35);border:1px solid rgba(255,255,255,.08);border-radius:19px;padding:4px">
+              <button onClick="{{ w.onLoadDown }}" style="width:32px;height:32px;border:none;background:none;color:#F5F1E6;font-size:19px;font-weight:700;cursor:pointer;padding:0;line-height:1">−</button>
+              <input value="{{ w.load }}" onChange="{{ w.onLoad }}" inputMode="decimal" style="width:52px;text-align:center;background:none;border:none;font-size:16px;font-weight:800;color:#F5F1E6;padding:0">
+              <button onClick="{{ w.onLoadUp }}" style="width:32px;height:32px;border:none;background:none;color:#F5F1E6;font-size:19px;font-weight:700;cursor:pointer;padding:0;line-height:1">+</button>
+            </div>
+            <span style="font-size:12.5px;font-weight:700;color:rgba(245,241,230,.55)">kg</span>
+            <div style="flex:1"></div>
+            <button onClick="{{ w.onSwap }}" style="height:36px;padding:0 14px;border-radius:18px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.2);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:rgba(245,241,230,.75)">
+              <svg width="13" height="12" viewBox="0 0 14 13"><path d="M3.5 1L1 3.5 3.5 6M1 3.5h9M10.5 7L13 9.5 10.5 12M13 9.5H4" fill="none" stroke="rgba(245,241,230,.75)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+              Trocar
+            </button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="position:absolute;left:22px;right:22px;bottom:46px;z-index:40">
+      <button onClick="{{ onFinish }}" style="width:100%;height:56px;border-radius:28px;background:rgba(245,241,230,.96);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.4);cursor:pointer;font-family:'Outfit',sans-serif;font-size:16px;font-weight:800;color:#1A1408;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 14px 34px rgba(0,0,0,.42);transition:transform .15s ease" style-active="transform:scale(0.97)">Concluir treino</button>
+    </div>
+  </div>
+</sc-if>
+
+<sc-if value="{{ isSummary }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Resumo do treino" style="position:relative;z-index:1;flex:1;display:flex;flex-direction:column;overflow:auto;padding:90px 26px 40px;box-sizing:border-box">
+    <div style="display:flex;flex-direction:column;align-items:center;text-align:center">
+      <div style="width:78px;height:78px;border-radius:50%;background:rgba(245,241,230,.96);border:1px solid rgba(255,255,255,.45);display:flex;align-items:center;justify-content:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 16px 38px rgba(0,0,0,.42)">
+        <svg width="30" height="24" viewBox="0 0 16 13"><path d="M1.5 6.5l4.5 4.5L14.5 1.5" fill="none" stroke="#1A1408" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+      </div>
+      <div style="font-size:25px;font-weight:800;letter-spacing:-0.5px;margin-top:16px;text-shadow:0 2px 14px rgba(0,0,0,.35)">Treino concluído!</div>
+      <div style="font-size:14px;color:rgba(245,241,230,.6);margin-top:3px">{{ sumFicha }}</div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:24px">
+      <div style="background:rgba(255,255,255,.08);backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:13px 8px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 8px 22px rgba(0,0,0,.25)">
+        <div style="font-size:19px;font-weight:800;color:#F5F1E6;font-variant-numeric:tabular-nums">{{ sumTime }}</div>
+        <div style="font-size:10.5px;font-weight:600;letter-spacing:0.6px;color:rgba(245,241,230,.5);text-transform:uppercase;margin-top:2px">Tempo</div>
+      </div>
+      <div style="background:rgba(255,255,255,.08);backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:13px 8px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 8px 22px rgba(0,0,0,.25)">
+        <div style="font-size:19px;font-weight:800;color:#F5F1E6">{{ sumDone }}</div>
+        <div style="font-size:10.5px;font-weight:600;letter-spacing:0.6px;color:rgba(245,241,230,.5);text-transform:uppercase;margin-top:2px">Exercícios</div>
+      </div>
+      <div style="background:rgba(255,255,255,.08);backdrop-filter:blur(20px) saturate(180%);border:1px solid rgba(255,255,255,.16);border-radius:20px;padding:13px 8px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 8px 22px rgba(0,0,0,.25)">
+        <div style="font-size:19px;font-weight:800;color:#F5F1E6">{{ sumVol }}</div>
+        <div style="font-size:10.5px;font-weight:600;letter-spacing:0.6px;color:rgba(245,241,230,.5);text-transform:uppercase;margin-top:2px">Volume</div>
+      </div>
+    </div>
+    <div style="margin-top:20px;padding:6px 16px;border-radius:20px;background:rgba(255,255,255,.06);backdrop-filter:blur(18px) saturate(170%);border:1px solid rgba(255,255,255,.13);box-shadow:inset 0 1px 0 rgba(255,255,255,.16)">
+      <sc-for list="{{ sumRows }}" as="s" hint-placeholder-count="4">
+        <div style="display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06)">
+          <svg width="14" height="12" viewBox="0 0 16 13" style="flex-shrink:0"><path d="M1.5 6.5l4.5 4.5L14.5 1.5" fill="none" stroke="{{ s.ck }}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          <div style="flex:1;font-size:13.5px;font-weight:600;text-transform:capitalize;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ s.name }}</div>
+          <div style="font-size:13px;font-weight:700;color:rgba(245,241,230,.65);flex-shrink:0">{{ s.detail }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="flex:1"></div>
+    <button onClick="{{ onBackHome }}" style="width:100%;height:54px;border-radius:27px;background:rgba(245,241,230,.96);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.4);cursor:pointer;font-family:'Outfit',sans-serif;font-size:15px;font-weight:800;color:#1A1408;margin-top:22px;flex-shrink:0;box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 12px 30px rgba(0,0,0,.4)">Voltar às fichas</button>
+  </div>
+</sc-if>
+
+<sc-if value="{{ restActive }}" hint-placeholder-val="{{ false }}">
+  <div data-screen-label="Timer de descanso" style="position:absolute;inset:0;z-index:100;background:rgba(10,8,16,.45);backdrop-filter:blur(26px) saturate(160%);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:restBackdropIn .3s ease-out both">
+    <div style="position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:6px;padding:32px 34px 28px;border-radius:38px;background:rgba(255,255,255,.09);backdrop-filter:blur(28px) saturate(190%);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 24px 60px rgba(0,0,0,.5);animation:restPanelIn .42s cubic-bezier(.22,1,.36,1) both">
+      <div style="position:absolute;width:26%;height:16%;top:0;left:6%;border-radius:50%;background:rgba(255,255,255,.6);filter:blur(18px);opacity:.13;mix-blend-mode:screen;animation:shine 7s ease-in-out infinite;pointer-events:none"></div>
+      <div style="font-size:12px;font-weight:800;letter-spacing:3px;color:rgba(245,241,230,.55);text-transform:uppercase">Descanso</div>
+      <div style="position:relative;width:200px;height:200px;margin-top:10px">
+        <div style="position:absolute;inset:14px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.28) 0%,transparent 68%);filter:blur(10px);animation:{{ restHaloAnim }};pointer-events:none"></div>
+        <svg width="200" height="200" viewBox="0 0 200 200" style="transform:rotate(-90deg);position:relative">
+          <circle cx="100" cy="100" r="86" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="10"></circle>
+          <circle cx="100" cy="100" r="86" fill="none" stroke="{{ restRingColor }}" stroke-width="10" stroke-linecap="round" stroke-dasharray="540.35" stroke-dashoffset="{{ restDash }}" style="transition:stroke-dashoffset .95s linear,stroke .3s ease;filter:drop-shadow(0 0 10px {{ restRingGlow }})"></circle>
+        </svg>
+        <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center">
+          {{ restNumEl }}
+          <div style="font-size:13px;color:rgba(245,241,230,.55);margin-top:-4px">segundos</div>
+        </div>
+      </div>
+      <div style="font-size:13.5px;color:rgba(245,241,230,.65);margin-top:10px;max-width:240px;text-align:center;text-transform:capitalize">{{ restNext }}</div>
+      <div style="display:flex;gap:12px;margin-top:16px">
+        <button onClick="{{ onRestPlus }}" style="height:46px;padding:0 20px;border-radius:23px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);box-shadow:inset 0 1px 0 rgba(255,255,255,.28);color:#F5F1E6;font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;cursor:pointer;transition:transform .15s ease" style-active="transform:scale(0.92)">+15s</button>
+        <button onClick="{{ onRestSkip }}" style="height:46px;padding:0 26px;border-radius:23px;background:rgba(245,241,230,.96);border:1px solid rgba(255,255,255,.4);box-shadow:inset 0 1px 0 rgba(255,255,255,.55),0 8px 20px rgba(0,0,0,.35);color:#1A1408;font-family:'Outfit',sans-serif;font-size:14px;font-weight:800;cursor:pointer;transition:transform .15s ease" style-active="transform:scale(0.92)">Pular</button>
+      </div>
+    </div>
+  </div>
+</sc-if>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;fichasLayout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;cartoes&quot;,&quot;lista&quot;,&quot;capas&quot;],&quot;default&quot;:&quot;cartoes&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Tela de fichas&quot;,&quot;description&quot;:&quot;Layout da lista de fichas&quot;},&quot;gifsAnimados&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Treino&quot;,&quot;description&quot;:&quot;GIFs animados nos cards do treino (desligue para imagens estáticas)&quot;},&quot;descansoPadrao&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:60,&quot;min&quot;:30,&quot;max&quot;:180,&quot;step&quot;:15,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Treino&quot;,&quot;description&quot;:&quot;Descanso padrão de novos exercícios&quot;}}">
+const RAW = 'https://raw.githubusercontent.com/hasaneyldrm/exercises-dataset/main/';
+const CATPT = { 'chest': 'Peito', 'back': 'Costas', 'shoulders': 'Ombros', 'upper arms': 'Braços', 'lower arms': 'Antebraços', 'upper legs': 'Pernas', 'lower legs': 'Panturrilhas', 'waist': 'Abdômen', 'cardio': 'Cardio', 'neck': 'Pescoço' };
+const EQPT = { 'body weight': 'Peso corporal', 'dumbbell': 'Halter', 'barbell': 'Barra', 'cable': 'Cabo', 'leverage machine': 'Máquina', 'smith machine': 'Smith', 'band': 'Elástico', 'kettlebell': 'Kettlebell', 'ez barbell': 'Barra EZ', 'weighted': 'Com peso', 'stability ball': 'Bola suíça' };
+const AMBER = '#F5F1E6';
+const AMBER_GRAD = 'rgba(245,241,230,.96)';
+const CIRC = 540.35;
+
+const EQUIP_SUFFIX = { barbell:'barra', dumbbell:'halteres', dumbbells:'halteres', cable:'cabo', band:'elástico', bands:'elásticos', kettlebell:'kettlebell', machine:'máquina', lever:'máquina', smith:'smith', ez:'barra EZ', weighted:'peso extra', bodyweight:'peso do corpo', body:'peso do corpo', assisted:'assistência', stability:'bola suíça', ball:'bola' };
+const STYLE_PREFIX = { seated:'sentado', standing:'em pé', lying:'deitado', incline:'inclinado', decline:'declinado', kneeling:'ajoelhado', alternate:'alternado', alternating:'alternado', single:'unilateral', reverse:'invertido', close:'pegada fechada', wide:'pegada aberta', narrow:'pegada fechada', neutral:'pegada neutra', flat:'reto', sumo:'sumô', romanian:'romeno', bulgarian:'búlgaro', conventional:'convencional', full:'completo', half:'parcial', elevated:'elevado', crossover:'cruzado', cross:'cruzado', assisted2:'assistido' };
+const COMPOUND = [
+  ['overhead triceps extension','tríceps francês'], ['triceps extension','tríceps francês'], ['skull crushers','tríceps testa'], ['skull crusher','tríceps testa'],
+  ['bench press','supino'], ['shoulder press','desenvolvimento'], ['overhead press','desenvolvimento militar'],
+  ['leg extension','cadeira extensora'], ['leg curl','mesa flexora'], ['leg press','leg press'],
+  ['lateral raise','elevação lateral'], ['front raise','elevação frontal'], ['rear delt raise','elevação posterior'], ['calf raise','elevação de panturrilha'],
+  ['chest fly','crucifixo'], ['pec fly','crucifixo'], ['flyes','crucifixo'], ['flye','crucifixo'], ['fly','crucifixo'],
+  ['seated row','remada sentada'], ['bent over row','remada curvada'], ['upright row','remada alta'], ['row','remada'],
+  ['lat pulldown','puxada'], ['pulldown','puxada'], ['chin-up','barra fixa supinada'], ['pull-up','barra fixa'], ['pullup','barra fixa'],
+  ['push-up','flexão de braço'], ['pushup','flexão de braço'],
+  ['biceps curl','rosca bíceps'], ['bicep curl','rosca bíceps'], ['hammer curl','rosca martelo'], ['preacher curl','rosca scott'], ['concentration curl','rosca concentrada'], ['curl','rosca'],
+  ['triceps pushdown','tríceps no pulley'], ['pushdown','tríceps no pulley'], ['kickback','tríceps kickback'],
+  ['chest dip','mergulho'], ['dips','mergulho'], ['dip','mergulho'],
+  ['full squat','agachamento completo'], ['front squat','agachamento frontal'], ['squat','agachamento'],
+  ['deadlift','levantamento terra'], ['good morning','bom dia'],
+  ['lunge','avanço'], ['step-up','subida no banco'], ['step up','subida no banco'],
+  ['hip thrust','elevação de quadril'], ['glute bridge','ponte de glúteo'], ['bridge','ponte'],
+  ['russian twist','giro russo'], ['crunch','abdominal'], ['sit-up','abdominal reto'], ['plank','prancha'],
+  ['shrug','encolhimento de ombros'], ['face pull','face pull'], ['pullover','pullover'], ['hyperextension','hiperextensão lombar'],
+];
+const FALLBACK_WORDS = { chest:'peito', back:'costas', shoulder:'ombro', shoulders:'ombros', biceps:'bíceps', bicep:'bíceps', triceps:'tríceps', tricep:'tríceps', forearm:'antebraço', calf:'panturrilha', calves:'panturrilhas', hip:'quadril', glute:'glúteo', glutes:'glúteos', hamstring:'posterior de coxa', quad:'quadríceps', quads:'quadríceps', neck:'pescoço', abs:'abdômen', oblique:'oblíquo', core:'core', arm:'braço', arms:'braços', leg:'perna', legs:'pernas' };
+function translateName(name) {
+  if (!name) return name;
+  let s = ' ' + name.toLowerCase().replace(/[()]/g, ' ') + ' ';
+  let equipPT = null;
+  for (const k in EQUIP_SUFFIX) { const re = new RegExp('\\s' + k + '\\s', 'g'); if (re.test(s)) { equipPT = EQUIP_SUFFIX[k]; s = s.replace(re, ' '); break; } }
+  const stylePTs = [];
+  for (const k in STYLE_PREFIX) { const re = new RegExp('\\s' + k + '\\s', 'g'); if (re.test(s)) { stylePTs.push(STYLE_PREFIX[k]); s = s.replace(re, ' '); } }
+  let core = null;
+  for (const [key, val] of COMPOUND) { const re = new RegExp('\\s' + key.replace(/[- ]/g, '[- ]') + '\\s'); if (re.test(s)) { core = val; s = s.replace(re, ' '); break; } }
+  if (!core) return name.charAt(0).toUpperCase() + name.slice(1);
+  const leftoverWords = s.split(' ').filter(Boolean).map(w => FALLBACK_WORDS[w] || null).filter(Boolean);
+  const parts = [core, ...stylePTs, ...leftoverWords];
+  let out = parts.filter(Boolean).join(' ').trim();
+  if (equipPT) out += ' com ' + equipPT;
+  if (!out) out = name;
+  return out.charAt(0).toUpperCase() + out.slice(1);
+}
+const uid = () => Math.random().toString(36).slice(2, 9);
+
+class Component extends DCLogic {
+  state = {
+    libStatus: 'loading', screen: 'home', tab: 'fichas',
+    fichas: [], history: [], editId: null,
+    pq: '', pcat: 'todos', ptarget: 'todos', pickerMode: 'add', swapKey: null, returnTo: 'edit',
+    customExs: [], cName: '', cUrl: '', video: null,
+    profile: { name: 'Atleta', photo: null },
+    wo: null, now: Date.now(), rest: null, summary: null,
+  };
+  lib = []; map = {};
+
+  componentDidMount() {
+    try {
+      const s = JSON.parse(localStorage.getItem('truze.app.v4') || 'null');
+      if (s && s.fichas) this.saved = s;
+    } catch (e) {}
+    this.loadLib();
+  }
+  componentWillUnmount() { clearInterval(this.tickInt); }
+
+  loadLib() {
+    try {
+      const c = localStorage.getItem('truze.lib.v2');
+      if (c) { this.libReady(JSON.parse(c)); return; }
+    } catch (e) {}
+    fetch(RAW + 'data/exercises.json').then(r => r.json()).then(d => {
+      const lib = d.map(e => ({ i: e.id, n: e.name, c: e.category, t: e.target || '', e: e.equipment || '', s: (e.gif_url || '').replace('videos/', '').replace('.gif', '') }));
+      try { localStorage.setItem('truze.lib.v2', JSON.stringify(lib)); } catch (e) {}
+      this.libReady(lib);
+    }).catch(() => this.setState({ libStatus: 'error' }));
+  }
+  libReady(lib) {
+    this.lib = lib;
+    this.map = {};
+    lib.forEach(e => { this.map[e.i] = e; });
+    const st = { libStatus: 'ready' };
+    if (this.saved) {
+      st.fichas = this.saved.fichas; st.history = this.saved.history || []; st.customExs = this.saved.customExs || [];
+      if (this.saved.profile) st.profile = this.saved.profile;
+      if (!st.history.some(h => (h.exsLog || []).length)) st.history = this.seedHistory(st.fichas).concat(st.history);
+      const bad = lib.find(e => e.n === 'band one arm twisting seated row');
+      const good = lib.find(e => e.n === 'cable seated row');
+      if (bad && good) st.fichas = st.fichas.map(f => ({ ...f, exs: f.exs.map(x => x.ex === bad.i ? { ...x, ex: good.i } : x) }));
+    }
+    else { st.fichas = this.seed(); st.history = this.seedHistory(st.fichas); }
+    this.setState(st, () => this.save());
+  }
+
+  pick(spec, kws, used, idx) {
+    const parts = spec.split(':');
+    let pool = this.lib.filter(e => e.c === parts[0] && (!parts[1] || (e.t || '').includes(parts[1])));
+    if (!pool.length) pool = this.lib;
+    for (const kw of kws) {
+      const f = pool.find(e => e.n.toLowerCase().includes(kw) && !used.has(e.i));
+      if (f) return f.i;
+    }
+    const fb = pool.find(e => !used.has(e.i)) || pool[idx % pool.length];
+    return fb.i;
+  }
+  mkFicha(name, defs) {
+    const used = new Set();
+    const exs = defs.map((d, ix) => {
+      const id = this.pick(d[0], d[1], used, ix);
+      used.add(id);
+      return { k: uid(), ex: id, sets: d[2], reps: d[3], rest: d[4], last: d[5] };
+    });
+    return { id: uid(), name, exs };
+  }
+  seed() {
+    return [
+      this.mkFicha('Treino A · Peito e Tríceps', [
+        ['chest', ['barbell bench press', 'bench press'], 4, 8, 90, 40],
+        ['chest', ['barbell incline bench press', 'incline bench press'], 3, 10, 90, 30],
+        ['chest', ['dumbbell fly', 'cable low fly', ' fly'], 3, 12, 60, 14],
+        ['chest', ['chest dip', 'dip'], 3, 10, 90, 0],
+        ['upper arms:triceps', ['cable pushdown', 'pushdown'], 3, 12, 60, 25],
+        ['upper arms:triceps', ['barbell standing overhead triceps extension', 'overhead triceps extension', 'extension'], 3, 12, 60, 20],
+        ['chest', ['push-up', 'push up'], 3, 15, 60, 0],
+        ['upper arms:triceps', ['skull', 'lying triceps'], 3, 10, 60, 15],
+      ]),
+      this.mkFicha('Treino B · Costas e Bíceps', [
+        ['back', ['pull-up', 'pull up'], 4, 8, 90, 0],
+        ['back', ['cable pulldown', 'lateral pulldown', 'pulldown'], 4, 10, 90, 55],
+        ['back', ['barbell bent over row', 'bent over row', ' row'], 4, 10, 90, 50],
+        ['back', ['cable seated row', 'cable low seated row', 'seated row'], 3, 12, 60, 45],
+        ['upper legs', ['barbell deadlift', 'deadlift'], 4, 6, 120, 80],
+        ['upper arms:biceps', ['barbell curl'], 3, 10, 60, 25],
+        ['upper arms:biceps', ['hammer'], 3, 12, 60, 12],
+        ['upper arms:biceps', ['preacher'], 3, 12, 60, 20],
+      ]),
+      this.mkFicha('Treino C · Pernas e Ombros', [
+        ['upper legs', ['barbell full squat', 'full squat', 'squat'], 4, 8, 120, 60],
+        ['upper legs', ['leg press'], 4, 10, 90, 120],
+        ['upper legs', ['dumbbell lunge', 'barbell lunge', 'lunge'], 3, 12, 60, 20],
+        ['upper legs', ['lever leg extension', 'leg extension'], 3, 12, 60, 40],
+        ['upper legs', ['lever lying leg curl', 'lying leg curl', 'leg curl'], 3, 12, 60, 35],
+        ['shoulders', ['barbell seated overhead press', 'dumbbell seated shoulder press', 'dumbbell shoulder press', 'cable shoulder press'], 4, 8, 90, 30],
+        ['shoulders', ['dumbbell lateral raise', 'cable lateral raise'], 3, 15, 60, 8],
+        ['lower legs', ['barbell standing calf raise', 'barbell seated calf raise', 'calf raise'], 4, 15, 60, 50],
+      ]),
+    ];
+  }
+
+  seedHistory(fichas) {
+    const DAY = 86400000;
+    const now = Date.now();
+    // 5 sessões passadas por ficha, com carga crescente (progressão)
+    const weeks = [{ ago: 35, f: 0.82 }, { ago: 28, f: 0.87 }, { ago: 21, f: 0.92 }, { ago: 14, f: 0.96 }, { ago: 7, f: 1.0 }];
+    const out = [];
+    fichas.forEach((f, fi) => {
+      weeks.forEach((w, wi) => {
+        const jitter = 1 + (wi === 4 ? 0 : (Math.sin(fi * 3 + wi) * 0.015));
+        let vol = 0;
+        const exsLog = f.exs.map(x => {
+          const base = x.last || 20;
+          const load = Math.max(0, Math.round((base * w.f * jitter) / 2.5) * 2.5);
+          vol += load * x.sets * x.reps;
+          return { ex: x.ex, load, sets: x.sets, reps: x.reps };
+        });
+        out.push({ id: uid(), at: now - w.ago * DAY - fi * 2 * DAY, name: f.name, secs: 2700 + wi * 90 + fi * 120, done: f.exs.length, total: f.exs.length, vol, exsLog });
+      });
+    });
+    return out.sort((a, b) => b.at - a.at);
+  }
+
+  save() {
+    try { localStorage.setItem('truze.app.v4', JSON.stringify({ fichas: this.state.fichas, history: this.state.history, customExs: this.state.customExs, profile: this.state.profile })); } catch (e) {}
+  }
+  updFichas(fn) { this.setState(s => ({ fichas: fn(s.fichas) }), () => this.save()); }
+
+  custom(id) { return (this.state.customExs || []).find(c => c.id === id); }
+  img(id) { const c = this.custom(id); if (c) return c.yt ? 'https://img.youtube.com/vi/' + c.yt + '/hqdefault.jpg' : ''; const e = this.map[id]; return e ? RAW + 'images/' + e.s + '.jpg' : ''; }
+  gif(id) { const c = this.custom(id); if (c) return c.yt ? 'https://img.youtube.com/vi/' + c.yt + '/hqdefault.jpg' : ''; const e = this.map[id]; return e ? RAW + 'videos/' + e.s + '.gif' : ''; }
+  exName(id) { const c = this.custom(id); if (c) return c.name; const e = this.map[id]; return e ? translateName(e.n) : '—'; }
+  exSub(id) { const c = this.custom(id); if (c) return c.yt ? 'Personalizado · vídeo' : 'Personalizado'; const e = this.map[id]; if (!e) return ''; return (CATPT[e.c] || e.c) + ' · ' + (EQPT[e.e] || e.e); }
+  ytId(url) { if (!url) return ''; const m = String(url).match(/(?:youtu\.be\/|v=|\/shorts\/|\/embed\/|\/live\/)([A-Za-z0-9_-]{11})/); return m ? m[1] : (String(url).trim().match(/^[A-Za-z0-9_-]{11}$/) ? url.trim() : ''); }
+  fmtSec(t) { const m = Math.floor(t / 60), s = t % 60; return m + ':' + String(s).padStart(2, '0'); }
+  fmtRest(t) { return t >= 60 ? (t % 60 === 0 ? (t / 60) + 'min' : Math.floor(t / 60) + 'm' + (t % 60)) : t + 's'; }
+  fichaMeta(f) {
+    const cats = [...new Set(f.exs.map(x => { const e = this.map[x.ex]; return e ? (CATPT[e.c] || e.c) : ''; }).filter(Boolean))];
+    return f.exs.length + ' exercícios · ' + cats.slice(0, 3).join(', ');
+  }
+
+  startTick() {
+    clearInterval(this.tickInt);
+    this.tickInt = setInterval(() => {
+      this.setState(s => {
+        let rest = s.rest;
+        if (rest) {
+          const left = Math.max(0, Math.ceil((rest.end - Date.now()) / 1000));
+          rest = left <= 0 ? null : { ...rest, left };
+        }
+        return { now: Date.now(), rest };
+      });
+    }, 250);
+  }
+
+  startWorkout(f) {
+    const loads = {};
+    f.exs.forEach(x => { loads[x.k] = x.last || 0; });
+    this.setState({ screen: 'workout', wo: { fichaId: f.id, started: Date.now(), setsDone: {}, loads }, rest: null });
+    this.startTick();
+  }
+  finishWorkout() {
+    const s = this.state;
+    const f = s.fichas.find(x => x.id === s.wo.fichaId);
+    if (!f) return;
+    const secs = Math.floor((Date.now() - s.wo.started) / 1000);
+    const sd = s.wo.setsDone || {};
+    const doneKeys = f.exs.filter(x => (sd[x.k] || 0) >= x.sets);
+    const anySet = f.exs.some(x => (sd[x.k] || 0) > 0);
+    if (!anySet && !window.confirm('Nenhuma série marcada. Concluir mesmo assim?')) return;
+    let vol = 0;
+    const rows = f.exs.map(x => {
+      const load = Number(s.wo.loads[x.k]) || 0;
+      const setsC = Math.min(sd[x.k] || 0, x.sets);
+      const done = setsC >= x.sets;
+      vol += load * setsC * x.reps;
+      return { name: this.exName(x.ex), done, load, setsC, sets: x.sets, reps: x.reps };
+    });
+    const exsLog = f.exs.filter(x => (sd[x.k] || 0) > 0).map(x => ({ ex: x.ex, load: Number(s.wo.loads[x.k]) || 0, sets: Math.min(sd[x.k] || 0, x.sets), reps: x.reps }));
+    const session = { id: uid(), at: Date.now(), name: f.name, secs, done: doneKeys.length, total: f.exs.length, vol, exsLog };
+    clearInterval(this.tickInt);
+    this.setState(st => ({
+      screen: 'summary', rest: null,
+      summary: { name: f.name, secs, done: doneKeys.length, total: f.exs.length, vol, rows },
+      history: [session, ...st.history],
+      fichas: st.fichas.map(fi => fi.id !== f.id ? fi : { ...fi, exs: fi.exs.map(x => ((st.wo.setsDone || {})[x.k] || 0) > 0 ? { ...x, last: Number(st.wo.loads[x.k]) || 0 } : x) }),
+      wo: null,
+    }), () => this.save());
+  }
+
+  renderVals() {
+    const s = this.state;
+    const p = this.props;
+    const layout = p.fichasLayout ?? 'cartoes';
+    const defaultRest = p.descansoPadrao ?? 60;
+    const gifsOn = p.gifsAnimados ?? true;
+    const ready = s.libStatus === 'ready';
+    const v = {
+      libLoading: s.libStatus === 'loading',
+      libError: s.libStatus === 'error',
+      onRetry: () => { this.setState({ libStatus: 'loading' }); this.loadLib(); },
+      isHome: ready && s.screen === 'home',
+      isEdit: ready && s.screen === 'edit',
+      isPicker: ready && s.screen === 'picker',
+      isCustom: ready && s.screen === 'custom',
+      isProfile: ready && s.screen === 'profile',
+      videoOpen: !!s.video,
+      videoSrc: s.video ? 'https://www.youtube.com/embed/' + s.video + '?autoplay=1&rel=0' : '',
+      onCloseVideo: () => this.setState({ video: null }),
+      isWorkout: ready && s.screen === 'workout' && !!s.wo,
+      isSummary: ready && s.screen === 'summary' && !!s.summary,
+      restActive: !!s.rest && s.screen === 'workout',
+      tabFichas: s.tab === 'fichas', tabHist: s.tab === 'hist', tabProg: s.tab === 'prog',
+      homeTitle: s.tab === 'fichas' ? 'Minhas fichas' : s.tab === 'hist' ? 'Histórico' : 'Progresso',
+      tabFichasBg: s.tab === 'fichas' ? AMBER_GRAD : 'transparent',
+      tabHistBg: s.tab === 'hist' ? AMBER_GRAD : 'transparent',
+      tabProgBg: s.tab === 'prog' ? AMBER_GRAD : 'transparent',
+      tabFichasShadow: s.tab === 'fichas' ? 'inset 0 1px 0 rgba(255,255,255,.5),0 6px 16px rgba(0,0,0,.35)' : 'none',
+      tabHistShadow: s.tab === 'hist' ? 'inset 0 1px 0 rgba(255,255,255,.5),0 6px 16px rgba(0,0,0,.35)' : 'none',
+      tabProgShadow: s.tab === 'prog' ? 'inset 0 1px 0 rgba(255,255,255,.5),0 6px 16px rgba(0,0,0,.35)' : 'none',
+      tabFichasFg: s.tab === 'fichas' ? '#1A1408' : 'rgba(245,241,230,.6)',
+      tabHistFg: s.tab === 'hist' ? '#1A1408' : 'rgba(245,241,230,.6)',
+      tabProgFg: s.tab === 'prog' ? '#1A1408' : 'rgba(245,241,230,.6)',
+      onTabFichas: () => this.setState({ tab: 'fichas' }),
+      onTabHist: () => this.setState({ tab: 'hist' }),
+      onTabProg: () => this.setState({ tab: 'prog' }),
+      layoutCards: layout === 'cartoes', layoutList: layout === 'lista', layoutCovers: layout === 'capas',
+      noFichas: ready && s.fichas.length === 0,
+      onNewFicha: () => {
+        const f = { id: uid(), name: '', exs: [] };
+        this.setState(st => ({ fichas: [...st.fichas, f], screen: 'edit', editId: f.id }), () => this.save());
+      },
+      onBackHome: () => {
+        this.updFichas(fs => fs.filter(f => f.exs.length > 0 || f.name.trim() !== ''));
+        this.setState({ screen: 'home', summary: null });
+      },
+      fichaCards: [], histRows: [], noHist: false, progRows: [], noProg: false,
+      editRows: [], editName: '', editMeta: '',
+      catChips: [], pickerRows: [], pickerQuery: s.pq,
+      pickerTitle: s.pickerMode === 'swap' ? 'Trocar exercício' : 'Biblioteca',
+      pickerCount: this.lib.length ? this.lib.length.toLocaleString('pt-BR') + ' exercícios' : '',
+      pickerMore: false, pickerMoreLabel: '', pickerEmpty: false,
+      onPickerQuery: (e) => this.setState({ pq: e.target.value }),
+      onPickerBack: () => this.setState({ screen: s.returnTo === 'workout' ? 'workout' : 'edit' }),
+      onOpenCustom: () => this.setState({ screen: 'custom', cName: '', cUrl: '' }),
+      onCustomBack: () => this.setState({ screen: 'picker' }),
+      onCustomName: (e) => this.setState({ cName: e.target.value }),
+      onCustomUrl: (e) => this.setState({ cUrl: e.target.value }),
+      cName: s.cName, cUrl: s.cUrl,
+      cPreviewId: this.ytId(s.cUrl),
+      cPreviewEl: null, cCanSave: s.cName.trim().length > 0,
+      cSaveDisabled: s.cName.trim().length === 0,
+      cSaveBg: s.cName.trim().length ? 'rgba(245,241,230,.96)' : 'rgba(245,241,230,.4)',
+      cSaveCursor: s.cName.trim().length ? 'pointer' : 'not-allowed',
+      cSaveOpacity: s.cName.trim().length ? 1 : 0.5,
+      onCustomSave: () => {
+        const name = s.cName.trim();
+        if (!name) return;
+        const yt = this.ytId(s.cUrl);
+        const cid = 'c_' + uid();
+        const custom = { id: cid, name, yt };
+        const targetFichaId = s.pickerMode === 'swap' ? (s.wo ? s.wo.fichaId : s.editId) : s.editId;
+        this.setState(st => {
+          let fichas = st.fichas;
+          if (st.pickerMode === 'swap' && st.swapKey) {
+            fichas = fichas.map(f => f.id !== targetFichaId ? f : { ...f, exs: f.exs.map(x => x.k !== st.swapKey ? x : { ...x, ex: cid }) });
+          } else {
+            fichas = fichas.map(f => f.id !== targetFichaId ? f : { ...f, exs: [...f.exs, { k: uid(), ex: cid, sets: 3, reps: 12, rest: defaultRest, last: 0 }] });
+          }
+          return { customExs: [...(st.customExs || []), custom], fichas, screen: st.returnTo === 'workout' ? 'workout' : 'edit' };
+        }, () => this.save());
+      },
+      woRows: [], woName: '', woElapsed: '', woProgressText: '', woProgressPct: '0%',
+      sumRows: [], sumFicha: '', sumTime: '', sumDone: '', sumVol: '',
+      restDash: 0, restNext: '',
+      onRestPlus: () => this.setState(st => st.rest ? { rest: { ...st.rest, end: st.rest.end + 15000, total: st.rest.total + 15 } } : null),
+      onRestSkip: () => this.setState({ rest: null }),
+      onAbandon: () => { if (window.confirm('Abandonar o treino? O progresso será perdido.')) { clearInterval(this.tickInt); this.setState({ screen: 'home', wo: null, rest: null }); } },
+      onFinish: () => this.finishWorkout(),
+      onAddEx: () => this.setState({ screen: 'picker', pickerMode: 'add', returnTo: 'edit', pq: '', pcat: 'todos' }),
+      onOpenProfile: () => this.setState({ screen: 'profile' }),
+      onProfileBack: () => this.setState({ screen: 'home' }),
+      onProfileName: (e) => this.setState(st => ({ profile: { ...st.profile, name: e.target.value } }), () => this.save()),
+      onRemovePhoto: () => this.setState(st => ({ profile: { ...st.profile, photo: null } }), () => this.save()),
+      onPhotoPick: (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => this.setState(st => ({ profile: { ...st.profile, photo: reader.result } }), () => this.save());
+        reader.readAsDataURL(file);
+      },
+      profileName: (s.profile && s.profile.name) || '',
+      headerAvatar: null, profileAvatarBig: null, hasPhoto: !!(s.profile && s.profile.photo),
+      profTreinos: '0', profFichas: '0', profHoras: '0',
+      onEditName: () => {}, onDeleteFicha: () => {},
+    };
+    if (!ready) return v;
+
+    // ---- perfil ----
+    const prof = s.profile || { name: 'Atleta', photo: null };
+    const initial = (prof.name || 'A').trim().charAt(0).toUpperCase() || 'A';
+    const avatarImg = (sz) => React.createElement('img', { src: prof.photo, alt: '', style: { width: '100%', height: '100%', objectFit: 'cover' } });
+    const avatarInitial = (fontSize) => React.createElement('div', { style: { width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize, fontWeight: 800, color: '#F5F1E6' } }, initial);
+    v.headerAvatar = prof.photo ? avatarImg() : avatarInitial(19);
+    v.profileAvatarBig = prof.photo ? avatarImg() : avatarInitial(50);
+    v.profTreinos = String(s.history.length);
+    v.profFichas = String(s.fichas.length);
+    v.profHoras = String(Math.round(s.history.reduce((a, h) => a + (h.secs || 0), 0) / 3600));
+
+    // ---- home: fichas ----
+    v.fichaCards = s.fichas.map(f => {
+      const start = () => { if (f.exs.length) this.startWorkout(f); else this.setState({ screen: 'edit', editId: f.id }); };
+      const edit = () => this.setState({ screen: 'edit', editId: f.id });
+      return {
+        id: f.id,
+        name: f.name || 'Sem nome',
+        meta: this.fichaMeta(f),
+        metaShort: f.exs.length + ' exercícios',
+        letter: (f.name || '?').replace('Treino ', '').charAt(0).toUpperCase(),
+        thumbStrip: f.exs.slice(0, 4).map(x => React.createElement('div', { key: x.k, style: { width: 58, height: 58, borderRadius: 16, background: '#fff', overflow: 'hidden', flexShrink: 0, border: '1px solid rgba(255,255,255,.3)' } }, React.createElement('img', { src: this.img(x.ex), alt: '', style: { width: '100%', height: '100%', objectFit: 'cover' } }))).concat(f.exs.length > 4 ? [React.createElement('div', { key: 'more', style: { width: 58, height: 58, borderRadius: 16, background: 'rgba(255,255,255,.09)', border: '1px solid rgba(255,255,255,.16)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'rgba(245,241,230,.65)', flexShrink: 0 } }, '+' + (f.exs.length - 4))] : []),
+        coverEl: f.exs.length ? React.createElement('img', { src: this.img(f.exs[0].ex), alt: '', style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' } }) : null,
+        onStart: start,
+        onEdit: edit,
+        onEditStop: (e) => { e.stopPropagation(); edit(); },
+      };
+    });
+
+    // ---- history ----
+    v.histRows = s.history.map(h => ({
+      id: h.id, name: h.name,
+      date: new Date(h.at).toLocaleDateString('pt-BR', { weekday: 'short', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }),
+      time: this.fmtSec(h.secs),
+      stats: h.done + '/' + h.total + ' · ' + (h.vol >= 1000 ? (h.vol / 1000).toFixed(1).replace('.', ',') + ' t' : h.vol + ' kg'),
+    }));
+    v.noHist = s.history.length === 0;
+
+    // ---- progresso / métricas ----
+    if (s.tab === 'prog') {
+      const byEx = {};
+      [...s.history].sort((a, b) => a.at - b.at).forEach(h => {
+        (h.exsLog || []).forEach(l => {
+          if (!(l.load > 0)) return;
+          (byEx[l.ex] = byEx[l.ex] || []).push({ at: h.at, load: l.load });
+        });
+      });
+      const rows = Object.keys(byEx).map(ex => {
+        const pts = byEx[ex];
+        const first = pts[0].load, last = pts[pts.length - 1].load;
+        const delta = last - first;
+        const pct = first ? Math.round(delta / first * 100) : 0;
+        const max = Math.max(...pts.map(p => p.load)), min = Math.min(...pts.map(p => p.load));
+        const W = 240, H = 60, pad = 6, span = Math.max(1, max - min);
+        const step = pts.length > 1 ? (W - pad * 2) / (pts.length - 1) : 0;
+        const coords = pts.map((p, i) => [pad + i * step, H - pad - (p.load - min) / span * (H - pad * 2)]);
+        const line = coords.map((c, i) => (i ? 'L' : 'M') + c[0].toFixed(1) + ' ' + c[1].toFixed(1)).join(' ');
+        const area = line + ' L' + coords[coords.length - 1][0].toFixed(1) + ' ' + (H - pad) + ' L' + coords[0][0].toFixed(1) + ' ' + (H - pad) + ' Z';
+        const chart = React.createElement('svg', { width: '100%', height: H, viewBox: '0 0 ' + W + ' ' + H, preserveAspectRatio: 'none', style: { display: 'block', overflow: 'visible' } },
+          React.createElement('path', { d: area, fill: 'rgba(255,255,255,.09)' }),
+          React.createElement('path', { d: line, fill: 'none', stroke: '#F5F1E6', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round', style: { filter: 'drop-shadow(0 0 5px rgba(255,255,255,.4))' } }),
+          ...coords.map((c, i) => React.createElement('circle', { key: i, cx: c[0], cy: c[1], r: i === coords.length - 1 ? 3.6 : 2.2, fill: i === coords.length - 1 ? '#FFFFFF' : 'rgba(245,241,230,.55)' })));
+        return {
+          ex, name: this.exName(ex), sub: this.exSub(ex),
+          thumbEl: React.createElement('img', { src: this.img(ex), alt: '', loading: 'lazy', style: { width: '100%', height: '100%', objectFit: 'cover' } }),
+          current: last + ' kg',
+          deltaLabel: (delta >= 0 ? '+' : '') + delta.toFixed(delta % 1 ? 1 : 0).replace('.', ',') + ' kg' + (pct ? ' · ' + (pct >= 0 ? '+' : '') + pct + '%' : ''),
+          deltaColor: delta > 0 ? '#8FE3A2' : (delta < 0 ? '#F0A0A0' : 'rgba(245,241,230,.6)'),
+          arrow: delta > 0 ? '▲' : (delta < 0 ? '▼' : '='),
+          sessions: pts.length + (pts.length > 1 ? ' registros' : ' registro'),
+          chart, _last: last, _delta: delta,
+        };
+      }).sort((a, b) => b._delta - a._delta);
+      v.progRows = rows;
+      v.noProg = rows.length === 0;
+    }
+
+    // ---- edit ----
+    const ef = s.fichas.find(f => f.id === s.editId);
+    if (ef && s.screen === 'edit') {
+      v.editName = ef.name;
+      v.editMeta = ef.exs.length + ' exercícios · toque em + para adicionar da biblioteca';
+      v.onEditName = (e) => this.updFichas(fs => fs.map(f => f.id === ef.id ? { ...f, name: e.target.value } : f));
+      v.onDeleteFicha = () => {
+        if (window.confirm('Excluir a ficha "' + (ef.name || 'Sem nome') + '"?')) {
+          this.updFichas(fs => fs.filter(f => f.id !== ef.id));
+          this.setState({ screen: 'home' });
+        }
+      };
+      const step = (k, field, d, min, max) => this.updFichas(fs => fs.map(f => f.id !== ef.id ? f : { ...f, exs: f.exs.map(x => x.k !== k ? x : { ...x, [field]: Math.min(max, Math.max(min, x[field] + d)) }) }));
+      v.editRows = ef.exs.map(x => ({
+        k: x.k,
+        thumbEl: React.createElement('img', { src: this.img(x.ex), alt: '', style: { width: '100%', height: '100%', objectFit: 'cover' } }),
+        name: this.exName(x.ex),
+        sub: this.exSub(x.ex),
+        sets: x.sets, reps: x.reps, restLabel: this.fmtRest(x.rest),
+        onSetsDown: () => step(x.k, 'sets', -1, 1, 10), onSetsUp: () => step(x.k, 'sets', 1, 1, 10),
+        onRepsDown: () => step(x.k, 'reps', -1, 1, 50), onRepsUp: () => step(x.k, 'reps', 1, 1, 50),
+        onRestDown: () => step(x.k, 'rest', -15, 15, 300), onRestUp: () => step(x.k, 'rest', 15, 15, 300),
+        onRemove: () => this.updFichas(fs => fs.map(f => f.id !== ef.id ? f : { ...f, exs: f.exs.filter(y => y.k !== x.k) })),
+      }));
+    }
+
+    // ---- picker ----
+    const cats = ['todos', 'legs', 'chest', 'back', 'shoulders', 'upper arms', 'lower arms', 'waist', 'cardio'];
+    v.catChips = cats.map(c => {
+      const on = s.pcat === c;
+      return {
+        k: c,
+        label: c === 'todos' ? 'Todos' : c === 'legs' ? 'Pernas' : (CATPT[c] || c),
+        bg: on ? AMBER_GRAD : 'rgba(255,255,255,.07)',
+        fg: on ? '#1A1408' : 'rgba(245,241,230,.75)',
+        border: on ? 'rgba(255,255,255,.4)' : 'rgba(255,255,255,.15)',
+        onPick: () => this.setState({ pcat: c, ptarget: 'todos' }),
+      };
+    });
+    const LEG_TARGETS = [['todos', 'Todas'], ['quad', 'Quadríceps'], ['hamstring', 'Posterior'], ['glute', 'Glúteos'], ['calv', 'Panturrilha'], ['adductor', 'Adutores'], ['abductor', 'Abdutores']];
+    v.showLegTargets = s.pcat === 'legs';
+    v.legTargetChips = LEG_TARGETS.map(([k, label]) => {
+      const on = s.ptarget === k;
+      return { k, label, bg: on ? 'rgba(255,255,255,.22)' : 'rgba(255,255,255,.05)', fg: on ? '#F5F1E6' : 'rgba(245,241,230,.55)', border: on ? 'rgba(255,255,255,.4)' : 'rgba(255,255,255,.12)', onPick: () => this.setState({ ptarget: k }) };
+    });
+    if (s.screen === 'picker') {
+      const q = s.pq.trim().toLowerCase();
+      let list = this.lib;
+      if (s.pcat === 'legs') {
+        list = list.filter(e => e.c === 'upper legs' || e.c === 'lower legs');
+        if (s.ptarget !== 'todos') list = list.filter(e => (e.t || '').toLowerCase().includes(s.ptarget));
+      } else if (s.pcat !== 'todos') list = list.filter(e => e.c === s.pcat);
+      if (q) list = list.filter(e => e.n.toLowerCase().includes(q) || (e.t || '').toLowerCase().includes(q));
+      const total = list.length;
+      const shown = list.slice(0, 60);
+      v.pickerEmpty = total === 0;
+      v.pickerMore = total > 60;
+      v.pickerMoreLabel = 'Mostrando 60 de ' + total.toLocaleString('pt-BR') + ' — refine a busca';
+      v.pickerRows = shown.map(e => ({
+        k: e.i, thumbEl: React.createElement('img', { src: RAW + 'images/' + e.s + '.jpg', alt: '', loading: 'lazy', style: { width: '100%', height: '100%', objectFit: 'cover' } }), name: translateName(e.n), sub: this.exSub(e.i),
+        onPick: () => {
+          if (s.pickerMode === 'swap' && s.swapKey) {
+            this.updFichas(fs => fs.map(f => f.id !== (s.wo ? s.wo.fichaId : s.editId) ? f : { ...f, exs: f.exs.map(x => x.k !== s.swapKey ? x : { ...x, ex: e.i }) }));
+            this.setState({ screen: s.returnTo === 'workout' ? 'workout' : 'edit' });
+          } else {
+            this.updFichas(fs => fs.map(f => f.id !== s.editId ? f : { ...f, exs: [...f.exs, { k: uid(), ex: e.i, sets: 3, reps: 12, rest: defaultRest, last: 0 }] }));
+            this.setState({ screen: 'edit' });
+          }
+        },
+      }));
+    }
+
+    // ---- custom exercise form ----
+    if (s.screen === 'custom') {
+      const yt = this.ytId(s.cUrl);
+      v.cPreviewEl = yt
+        ? React.createElement('div', { style: { position: 'relative', width: '100%', aspectRatio: '16/9', borderRadius: 18, overflow: 'hidden', border: '1px solid rgba(255,255,255,.18)', background: '#000' } },
+            React.createElement('img', { src: 'https://img.youtube.com/vi/' + yt + '/hqdefault.jpg', alt: '', style: { width: '100%', height: '100%', objectFit: 'cover' } }),
+            React.createElement('div', { style: { position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+              React.createElement('div', { style: { width: 52, height: 52, borderRadius: '50%', background: 'rgba(255,255,255,.92)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px rgba(0,0,0,.5)' } },
+                React.createElement('div', { style: { width: 0, height: 0, borderTop: '9px solid transparent', borderBottom: '9px solid transparent', borderLeft: '15px solid #1A1408', marginLeft: 3 } }))))
+        : null;
+    }
+
+    // ---- workout ----
+    if (s.wo) {
+      const f = s.fichas.find(x => x.id === s.wo.fichaId);
+      if (f) {
+        const sd = s.wo.setsDone || {};
+        const totalSets = f.exs.reduce((a, x) => a + x.sets, 0);
+        const doneSets = f.exs.reduce((a, x) => a + Math.min(sd[x.k] || 0, x.sets), 0);
+        v.woName = f.name;
+        v.woElapsed = this.fmtSec(Math.floor((s.now - s.wo.started) / 1000));
+        v.woProgressText = doneSets + '/' + totalSets + ' séries';
+        v.woProgressPct = (totalSets ? Math.round(doneSets / totalSets * 100) : 0) + '%';
+        v.woRows = f.exs.map(x => {
+          const c = Math.min(sd[x.k] || 0, x.sets);
+          const done = c >= x.sets;
+          const pills = Array.from({ length: x.sets }, (_, i) => {
+            const filled = i < c;
+            const setSetsDone = (n) => this.setState(st => {
+              const cur = Math.min((st.wo.setsDone || {})[x.k] || 0, x.sets);
+              const increased = n > cur;
+              const nextMap = { ...(st.wo.setsDone || {}), [x.k]: n };
+              let rest = st.rest;
+              if (increased) {
+                const allSetsDone = f.exs.every(y => (nextMap[y.k] || 0) >= y.sets);
+                if (!allSetsDone) {
+                  const moreHere = n < x.sets;
+                  const nextEx = f.exs.find(y => (nextMap[y.k] || 0) < y.sets);
+                  const label = moreHere ? ('Série ' + (n + 1) + ' de ' + x.sets + ' · ' + this.exName(x.ex)) : (nextEx ? 'Próximo: ' + this.exName(nextEx.ex) : '');
+                  rest = { end: Date.now() + x.rest * 1000, total: x.rest, left: x.rest, next: label };
+                }
+              }
+              return { wo: { ...st.wo, setsDone: nextMap }, rest };
+            });
+            const isNext = i === c;
+            return {
+              key: x.k + '-' + i, n: i + 1, filled,
+              content: filled ? '✓' : String(i + 1),
+              bg: filled ? AMBER_GRAD : (isNext ? 'rgba(255,255,255,.12)' : 'rgba(10,8,16,.35)'),
+              fg: filled ? '#1A1408' : (isNext ? '#F5F1E6' : 'rgba(245,241,230,.5)'),
+              border: filled ? 'rgba(255,255,255,.45)' : (isNext ? 'rgba(255,255,255,.35)' : 'rgba(255,255,255,.1)'),
+              shadow: filled ? 'inset 0 1px 0 rgba(255,255,255,.5),0 5px 14px rgba(0,0,0,.4)' : 'inset 0 1px 0 rgba(255,255,255,.12)',
+              onTap: () => setSetsDone(filled ? i : i + 1),
+            };
+          });
+          const cust = this.custom(x.ex);
+          const ytVid = cust && cust.yt ? cust.yt : null;
+          const mediaImg = React.createElement('img', { src: gifsOn ? this.gif(x.ex) : this.img(x.ex), alt: '', style: { width: '100%', height: '100%', objectFit: 'cover' } });
+          const mediaEl = ytVid
+            ? React.createElement('div', { onClick: () => this.setState({ video: ytVid }), style: { position: 'relative', width: '100%', height: '100%', cursor: 'pointer' } },
+                mediaImg,
+                React.createElement('div', { style: { position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,0,0,.18)' } },
+                  React.createElement('div', { style: { width: 26, height: 26, borderRadius: '50%', background: 'rgba(255,255,255,.92)', display: 'flex', alignItems: 'center', justifyContent: 'center' } },
+                    React.createElement('div', { style: { width: 0, height: 0, borderTop: '5px solid transparent', borderBottom: '5px solid transparent', borderLeft: '8px solid #1A1408', marginLeft: 2 } }))))
+            : mediaImg;
+          return {
+            k: x.k,
+            mediaEl,
+            name: this.exName(x.ex),
+            setsReps: x.sets + ' séries × ' + x.reps + ' reps · descanso ' + this.fmtRest(x.rest),
+            lastLabel: x.last ? 'Última vez: ' + x.last + ' kg' : 'Primeira vez neste exercício',
+            load: String(s.wo.loads[x.k] ?? 0),
+            border: done ? 'rgba(255,255,255,.4)' : 'rgba(255,255,255,.14)',
+            opacity: done ? 0.78 : 1,
+            setPills: pills,
+            setsCountLabel: c + '/' + x.sets,
+            setsCountColor: done ? '#F5F1E6' : 'rgba(245,241,230,.55)',
+            onLoad: (e) => {
+              const val = e.target.value.replace(',', '.');
+              this.setState(st => ({ wo: { ...st.wo, loads: { ...st.wo.loads, [x.k]: val } } }));
+            },
+            onLoadDown: () => this.setState(st => ({ wo: { ...st.wo, loads: { ...st.wo.loads, [x.k]: Math.max(0, (Number(st.wo.loads[x.k]) || 0) - 2.5) } } })),
+            onLoadUp: () => this.setState(st => ({ wo: { ...st.wo, loads: { ...st.wo.loads, [x.k]: (Number(st.wo.loads[x.k]) || 0) + 2.5 } } })),
+            onSwap: () => this.setState({ screen: 'picker', pickerMode: 'swap', swapKey: x.k, returnTo: 'workout', pq: '', pcat: 'todos' }),
+          };
+        });
+      }
+    }
+
+    // ---- rest ----
+    v.restRingColor = '#F5F1E6'; v.restRingGlow = 'rgba(255,255,255,.5)'; v.restHaloAnim = 'restHalo 2.4s ease-in-out infinite';
+    v.restNumEl = null;
+    if (s.rest) {
+      const left = s.rest.left;
+      const urgent = left <= 5;
+      v.restDash = CIRC * (1 - left / s.rest.total);
+      v.restNext = s.rest.next || '';
+      v.restRingColor = urgent ? '#FFFFFF' : '#F5F1E6';
+      v.restRingGlow = urgent ? 'rgba(255,255,255,.85)' : 'rgba(255,255,255,.5)';
+      v.restHaloAnim = urgent ? 'restHaloFast 1s ease-in-out infinite' : 'restHalo 2.4s ease-in-out infinite';
+      v.restNumEl = React.createElement('div', {
+        key: left,
+        style: { fontSize: 52, fontWeight: 800, fontVariantNumeric: 'tabular-nums', letterSpacing: '-1px', color: urgent ? '#FFFFFF' : '#F5F1E6', textShadow: urgent ? '0 0 22px rgba(255,255,255,.6)' : 'none', animation: 'numPop .5s cubic-bezier(.22,1,.36,1)' },
+      }, String(left));
+    }
+
+    // ---- summary ----
+    if (s.summary) {
+      const su = s.summary;
+      v.sumFicha = su.name;
+      v.sumTime = this.fmtSec(su.secs);
+      v.sumDone = su.done + '/' + su.total;
+      v.sumVol = su.vol >= 1000 ? (su.vol / 1000).toFixed(1).replace('.', ',') + ' t' : su.vol + ' kg';
+      v.sumRows = su.rows.map((r, i) => ({
+        k: i, name: r.name,
+        ck: r.setsC > 0 ? AMBER : 'rgba(245,241,230,.18)',
+        detail: r.setsC > 0 ? (r.setsC + '×' + (r.load ? ' ' + r.load + ' kg' : (r.reps + ' reps'))) : 'pulado',
+      }));
+    }
+    return v;
+  }
+}
+</script>
+</body>
+</html>
