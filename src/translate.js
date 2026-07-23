@@ -4,6 +4,7 @@ export const EQPT = { 'body weight': 'Peso corporal', 'dumbbell': 'Halter', 'bar
 export const AMBER = '#F5F1E6';
 export const AMBER_GRAD = 'rgba(245,241,230,.96)';
 export const CIRC = 540.35;
+export const SKELETON = 'background:linear-gradient(90deg, rgba(255,255,255,.05) 25%, rgba(255,255,255,.14) 37%, rgba(255,255,255,.05) 63%);background-size:400% 100%;animation:skeleton 1.4s ease infinite';
 
 const EQUIP_SUFFIX = { barbell: 'barra', dumbbell: 'halteres', dumbbells: 'halteres', cable: 'cabo', band: 'elástico', bands: 'elásticos', kettlebell: 'kettlebell', machine: 'máquina', lever: 'máquina', smith: 'smith', ez: 'barra EZ', weighted: 'peso extra', bodyweight: 'peso do corpo', body: 'peso do corpo', assisted: 'assistência', stability: 'bola suíça', ball: 'bola' };
 const STYLE_PREFIX = { seated: 'sentado', standing: 'em pé', lying: 'deitado', incline: 'inclinado', decline: 'declinado', kneeling: 'ajoelhado', alternate: 'alternado', alternating: 'alternado', single: 'unilateral', reverse: 'invertido', close: 'pegada fechada', wide: 'pegada aberta', narrow: 'pegada fechada', neutral: 'pegada neutra', flat: 'reto', sumo: 'sumô', romanian: 'romeno', bulgarian: 'búlgaro', conventional: 'convencional', full: 'completo', half: 'parcial', elevated: 'elevado', crossover: 'cruzado', cross: 'cruzado', assisted2: 'assistido' };

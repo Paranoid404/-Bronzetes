@@ -1,7 +1,7 @@
 import React from 'react';
 import { css } from './css.js';
 import { Pressable } from './Pressable.jsx';
-import { RAW, CATPT, EQPT, AMBER, AMBER_GRAD, CIRC, translateName, uid } from './translate.js';
+import { RAW, CATPT, EQPT, AMBER, AMBER_GRAD, CIRC, SKELETON, translateName, uid } from './translate.js';
 import { supabase } from './supabaseClient.js';
 import logo from './assets/bronzetes-logo-sem-fundo.png';
 
@@ -488,7 +488,7 @@ class App extends React.Component {
         meta: this.fichaMeta(f),
         metaShort: f.exs.length + ' exercícios',
         letter: (f.name || '?').replace('Treino ', '').charAt(0).toUpperCase(),
-        thumbStrip: f.exs.slice(0, 4).map(x => React.createElement('div', { key: x.k, style: { width: 58, height: 58, borderRadius: 16, background: '#fff', overflow: 'hidden', flexShrink: 0, border: '1px solid rgba(255,255,255,.3)' } }, React.createElement('img', { src: this.img(x.ex), alt: '', style: { width: '100%', height: '100%', objectFit: 'cover' } }))).concat(f.exs.length > 4 ? [React.createElement('div', { key: 'more', style: { width: 58, height: 58, borderRadius: 16, background: 'rgba(255,255,255,.09)', border: '1px solid rgba(255,255,255,.16)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'rgba(245,241,230,.65)', flexShrink: 0 } }, '+' + (f.exs.length - 4))] : []),
+        thumbStrip: f.exs.slice(0, 4).map(x => React.createElement('div', { key: x.k, style: { width: 58, height: 58, borderRadius: 16, background: 'linear-gradient(90deg, rgba(255,255,255,.05) 25%, rgba(255,255,255,.14) 37%, rgba(255,255,255,.05) 63%)', backgroundSize: '400% 100%', animation: 'skeleton 1.4s ease infinite', overflow: 'hidden', flexShrink: 0, border: '1px solid rgba(255,255,255,.3)' } }, React.createElement('img', { src: this.img(x.ex), alt: '', loading: 'lazy', style: { width: '100%', height: '100%', objectFit: 'cover' } }))).concat(f.exs.length > 4 ? [React.createElement('div', { key: 'more', style: { width: 58, height: 58, borderRadius: 16, background: 'rgba(255,255,255,.09)', border: '1px solid rgba(255,255,255,.16)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 13, fontWeight: 700, color: 'rgba(245,241,230,.65)', flexShrink: 0 } }, '+' + (f.exs.length - 4))] : []),
         coverEl: f.exs.length ? React.createElement('img', { src: this.img(f.exs[0].ex), alt: '', style: { position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' } }) : null,
         onStart: start,
         onEdit: edit,
@@ -576,7 +576,7 @@ class App extends React.Component {
       const setDirect = (k, field, val, min, max) => this.updFichas(fs => fs.map(f => f.id !== ef.id ? f : { ...f, exs: f.exs.map(x => x.k !== k ? x : { ...x, [field]: Math.min(max, Math.max(min, val)) }) }));
       v.editRows = ef.exs.map(x => ({
         k: x.k,
-        thumbEl: React.createElement('img', { src: this.img(x.ex), alt: '', style: { width: '100%', height: '100%', objectFit: 'cover' } }),
+        thumbEl: React.createElement('img', { src: this.img(x.ex), alt: '', loading: 'lazy', style: { width: '100%', height: '100%', objectFit: 'cover' } }),
         name: this.exName(x.ex),
         sub: this.exSub(x.ex),
         sets: x.sets, reps: x.reps, restLabel: this.fmtRest(x.rest),
@@ -692,7 +692,7 @@ class App extends React.Component {
           });
           const cust = this.custom(x.ex);
           const ytVid = cust && cust.yt ? cust.yt : null;
-          const mediaImg = React.createElement('img', { src: gifsOn ? this.gif(x.ex) : this.img(x.ex), alt: '', style: { width: '100%', height: '100%', objectFit: 'cover' } });
+          const mediaImg = React.createElement('img', { src: gifsOn ? this.gif(x.ex) : this.img(x.ex), alt: '', loading: 'lazy', style: { width: '100%', height: '100%', objectFit: 'cover' } });
           const mediaEl = ytVid
             ? React.createElement('div', { onClick: () => this.setState({ video: ytVid }), style: { position: 'relative', width: '100%', height: '100%', cursor: 'pointer' } },
                 mediaImg,
@@ -874,7 +874,7 @@ class App extends React.Component {
             {v.layoutCovers && (
               <div style={css(`display:grid;grid-template-columns:1fr 1fr;gap:14px`)}>
                 {v.fichaCards.map(f => (
-                  <div key={f.id} onClick={f.onStart} style={css(`position:relative;border-radius:24px;overflow:hidden;background:#fff;aspect-ratio:0.82;cursor:pointer;border:1px solid rgba(255,255,255,.22);box-shadow:0 14px 30px rgba(0,0,0,.35)`)}>
+                  <div key={f.id} onClick={f.onStart} style={css(`position:relative;border-radius:24px;overflow:hidden;${SKELETON};aspect-ratio:0.82;cursor:pointer;border:1px solid rgba(255,255,255,.22);box-shadow:0 14px 30px rgba(0,0,0,.35)`)}>
                     {f.coverEl}
                     <button onClick={f.onEditStop} style={css(`position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;background:rgba(20,16,30,.4);backdrop-filter:blur(14px) saturate(160%);border:1px solid rgba(255,255,255,.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.3);cursor:pointer;display:flex;align-items:center;justify-content:center`)}>
                       <svg width="12" height="12" viewBox="0 0 14 14"><path d="M9.5 1.5l3 3L5 12H2v-3l7.5-7.5z" fill="none" stroke="rgba(245,241,230,.9)" strokeWidth="1.5" strokeLinejoin="round"></path></svg>
@@ -950,7 +950,7 @@ class App extends React.Component {
             {v.progRows.map(p => (
               <div key={p.ex} style={css(`background:rgba(255,255,255,.075);backdrop-filter:blur(22px) saturate(180%);border:1px solid rgba(255,255,255,.15);border-radius:22px;padding:14px 15px;margin-bottom:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.2),0 10px 26px rgba(0,0,0,.26)`)}>
                 <div style={css(`display:flex;align-items:center;gap:11px`)}>
-                  <div style={css(`width:44px;height:44px;border-radius:13px;background:#fff;overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.3)`)}>{p.thumbEl}</div>
+                  <div style={css(`width:44px;height:44px;border-radius:13px;${SKELETON};overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.3)`)}>{p.thumbEl}</div>
                   <div style={css(`flex:1;min-width:0`)}>
                     <div style={css(`font-size:14.5px;font-weight:700;line-height:1.2;text-transform:capitalize;white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{p.name}</div>
                     <div style={css(`font-size:11.5px;color:rgba(245,241,230,.5);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis`)}>{p.sessions} · {p.periodLabel}</div>
@@ -1014,7 +1014,7 @@ class App extends React.Component {
           {v.editRows.map(r => (
             <div key={r.k} style={css(`background:rgba(255,255,255,.065);backdrop-filter:blur(20px) saturate(175%);border:1px solid rgba(255,255,255,.14);border-radius:22px;padding:12px;margin-bottom:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 10px 24px rgba(0,0,0,.26)`)}>
               <div style={css(`display:flex;gap:12px;align-items:center`)}>
-                <div style={css(`width:52px;height:52px;border-radius:16px;background:#fff;overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.3)`)}>{r.thumbEl}</div>
+                <div style={css(`width:52px;height:52px;border-radius:16px;${SKELETON};overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.3)`)}>{r.thumbEl}</div>
                 <div style={css(`flex:1;min-width:0`)}>
                   <div style={css(`font-size:14.5px;font-weight:600;line-height:1.25;text-transform:capitalize`)}>{r.name}</div>
                   <div style={css(`font-size:12px;color:rgba(245,241,230,.5);margin-top:1px`)}>{r.sub}</div>
@@ -1105,7 +1105,7 @@ class App extends React.Component {
           </Pressable>
           {v.pickerRows.map(p => (
             <div key={p.k} onClick={p.onPick} style={css(`display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,.06);cursor:pointer`)}>
-              <div style={css(`width:52px;height:52px;border-radius:16px;background:#fff;overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.3)`)}>{p.thumbEl}</div>
+              <div style={css(`width:52px;height:52px;border-radius:16px;${SKELETON};overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.3)`)}>{p.thumbEl}</div>
               <div style={css(`flex:1;min-width:0`)}>
                 <div style={css(`font-size:14.5px;font-weight:600;line-height:1.25;text-transform:capitalize`)}>{p.name}</div>
                 <div style={css(`font-size:12px;color:rgba(245,241,230,.5);margin-top:1px`)}>{p.sub}</div>
@@ -1291,7 +1291,7 @@ class App extends React.Component {
           {v.woRows.map(w => (
             <div key={w.k} style={css(`background:rgba(255,255,255,.065);backdrop-filter:blur(20px) saturate(175%);border:1px solid ${w.border};border-radius:24px;padding:12px;margin-bottom:12px;opacity:${w.opacity};box-shadow:inset 0 1px 0 rgba(255,255,255,.18),0 10px 26px rgba(0,0,0,.26);transition:opacity .25s,border-color .25s`)}>
               <div style={css(`display:flex;gap:12px`)}>
-                <div style={css(`width:74px;height:74px;border-radius:18px;background:#fff;overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.3)`)}>{w.mediaEl}</div>
+                <div style={css(`width:74px;height:74px;border-radius:18px;${SKELETON};overflow:hidden;flex-shrink:0;border:1px solid rgba(255,255,255,.3)`)}>{w.mediaEl}</div>
                 <div style={css(`flex:1;min-width:0`)}>
                   <div style={css(`font-size:15px;font-weight:700;line-height:1.25;text-transform:capitalize`)}>{w.name}</div>
                   <div style={css(`font-size:12.5px;color:rgba(245,241,230,.55);margin-top:2px`)}>{w.setsReps}</div>

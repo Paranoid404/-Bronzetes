@@ -15,3 +15,4 @@ input::placeholder{color:rgba(245,241,230,.4)}
 @keyframes restHalo{0%,100%{opacity:.35;transform:scale(.92)}50%{opacity:.85;transform:scale(1.08)}}
 @keyframes restHaloFast{0%,100%{opacity:.5;transform:scale(.95)}50%{opacity:1;transform:scale(1.12)}}
 @keyframes numPop{0%{opacity:.2;transform:scale(1.45)}55%{opacity:1;transform:scale(.94)}100%{transform:scale(1)}}
+@keyframes skeleton{0%{background-position:200% 0}100%{background-position:-200% 0}}
