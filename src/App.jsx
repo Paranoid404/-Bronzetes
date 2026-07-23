@@ -1371,15 +1371,13 @@ class App extends React.Component {
 
   renderRest(v) {
     return (
-      <div data-screen-label="Timer de descanso" style={css(`position:absolute;inset:0;z-index:100;background:rgba(10,8,16,.45);backdrop-filter:blur(26px) saturate(160%);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:restBackdropIn .3s ease-out both`)}>
-        <div style={css(`position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:6px;padding:32px 34px 28px;border-radius:38px;background:rgba(255,255,255,.09);backdrop-filter:blur(28px) saturate(190%);border:1px solid rgba(255,255,255,.22);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 24px 60px rgba(0,0,0,.5);animation:restPanelIn .42s cubic-bezier(.22,1,.36,1) both`)}>
-          <div style={css(`position:absolute;width:26%;height:16%;top:0;left:6%;border-radius:50%;background:rgba(255,255,255,.6);filter:blur(18px);opacity:.13;mix-blend-mode:screen;animation:shine 7s ease-in-out infinite;pointer-events:none`)}></div>
+      <div data-screen-label="Timer de descanso" style={css(`position:absolute;inset:0;z-index:100;background:rgba(6,5,10,.82);display:flex;flex-direction:column;align-items:center;justify-content:center;animation:restBackdropIn .3s ease-out both`)}>
+        <div style={css(`position:relative;overflow:hidden;display:flex;flex-direction:column;align-items:center;gap:6px;padding:32px 34px 28px;border-radius:38px;background:rgba(26,20,34,.96);border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),0 24px 60px rgba(0,0,0,.5);animation:restPanelIn .42s cubic-bezier(.22,1,.36,1) both`)}>
           <div style={css(`font-size:12px;font-weight:800;letter-spacing:3px;color:rgba(245,241,230,.55);text-transform:uppercase`)}>Descanso</div>
           <div style={css(`position:relative;width:200px;height:200px;margin-top:10px`)}>
-            <div style={css(`position:absolute;inset:14px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.3) 0%,rgba(255,255,255,.14) 35%,rgba(255,255,255,.04) 65%,transparent 100%);filter:blur(24px);animation:${v.restHaloAnim};pointer-events:none`)}></div>
             <svg width="200" height="200" viewBox="0 0 200 200" style={css(`transform:rotate(-90deg);position:relative`)}>
               <circle cx="100" cy="100" r="86" fill="none" stroke="rgba(255,255,255,.12)" strokeWidth="10"></circle>
-              <circle ref={this.ringRef} cx="100" cy="100" r="86" fill="none" stroke={v.restRingColor} strokeWidth="10" strokeLinecap="round" strokeDasharray="540.35" strokeDashoffset={v.restDash} style={{ transition: 'stroke .3s ease', filter: `drop-shadow(0 0 10px ${v.restRingGlow})` }}></circle>
+              <circle ref={this.ringRef} cx="100" cy="100" r="86" fill="none" stroke={v.restRingColor} strokeWidth="10" strokeLinecap="round" strokeDasharray="540.35" strokeDashoffset={v.restDash} style={{ transition: 'stroke .3s ease' }}></circle>
             </svg>
             <div style={css(`position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center`)}>
               {v.restNumEl}
