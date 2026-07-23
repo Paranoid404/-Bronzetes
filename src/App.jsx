@@ -1023,29 +1023,29 @@ class App extends React.Component {
                   <svg width="10" height="10" viewBox="0 0 10 10"><path d="M1 1l8 8M9 1l-8 8" stroke="rgba(245,241,230,.6)" strokeWidth="1.8" strokeLinecap="round"></path></svg>
                 </button>
               </div>
-              <div style={css(`display:flex;gap:8px;margin-top:11px`)}>
-                <div style={css(`flex:1;background:rgba(10,8,16,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:7px 10px`)}>
+              <div style={css(`display:flex;flex-wrap:wrap;gap:8px;row-gap:8px;margin-top:11px`)}>
+                <div style={css(`flex:1 1 104px;min-width:104px;background:rgba(10,8,16,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:7px 10px;box-sizing:border-box`)}>
                   <div style={css(`font-size:10.5px;font-weight:700;letter-spacing:0.8px;color:rgba(245,241,230,.45);text-transform:uppercase`)}>Séries</div>
                   <div style={css(`display:flex;align-items:center;justify-content:space-between;margin-top:2px`)}>
-                    <button onClick={r.onSetsDown} style={css(`width:36px;height:36px;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>−</button>
-                    <input value={r.sets} onChange={r.onSetsInput} inputMode="numeric" style={css(`width:28px;text-align:center;background:none;border:none;font-size:15px;font-weight:700;color:#F5F1E6;padding:0`)} />
-                    <button onClick={r.onSetsUp} style={css(`width:36px;height:36px;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>+</button>
+                    <button onClick={r.onSetsDown} style={css(`width:32px;height:32px;flex-shrink:0;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>−</button>
+                    <input value={r.sets} onChange={r.onSetsInput} inputMode="numeric" style={css(`width:24px;min-width:0;text-align:center;background:none;border:none;font-size:15px;font-weight:700;color:#F5F1E6;padding:0`)} />
+                    <button onClick={r.onSetsUp} style={css(`width:32px;height:32px;flex-shrink:0;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>+</button>
                   </div>
                 </div>
-                <div style={css(`flex:1;background:rgba(10,8,16,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:7px 10px`)}>
+                <div style={css(`flex:1 1 104px;min-width:104px;background:rgba(10,8,16,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:7px 10px;box-sizing:border-box`)}>
                   <div style={css(`font-size:10.5px;font-weight:700;letter-spacing:0.8px;color:rgba(245,241,230,.45);text-transform:uppercase`)}>Reps</div>
                   <div style={css(`display:flex;align-items:center;justify-content:space-between;margin-top:2px`)}>
-                    <button onClick={r.onRepsDown} style={css(`width:36px;height:36px;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>−</button>
-                    <input value={r.reps} onChange={r.onRepsInput} inputMode="numeric" style={css(`width:28px;text-align:center;background:none;border:none;font-size:15px;font-weight:700;color:#F5F1E6;padding:0`)} />
-                    <button onClick={r.onRepsUp} style={css(`width:36px;height:36px;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>+</button>
+                    <button onClick={r.onRepsDown} style={css(`width:32px;height:32px;flex-shrink:0;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>−</button>
+                    <input value={r.reps} onChange={r.onRepsInput} inputMode="numeric" style={css(`width:24px;min-width:0;text-align:center;background:none;border:none;font-size:15px;font-weight:700;color:#F5F1E6;padding:0`)} />
+                    <button onClick={r.onRepsUp} style={css(`width:32px;height:32px;flex-shrink:0;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>+</button>
                   </div>
                 </div>
-                <div style={css(`flex:1.2;background:rgba(10,8,16,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:7px 10px`)}>
+                <div style={css(`flex:1.2 1 118px;min-width:118px;background:rgba(10,8,16,.35);border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:7px 10px;box-sizing:border-box`)}>
                   <div style={css(`font-size:10.5px;font-weight:700;letter-spacing:0.8px;color:rgba(245,241,230,.45);text-transform:uppercase`)}>Descanso</div>
                   <div style={css(`display:flex;align-items:center;justify-content:space-between;margin-top:2px`)}>
-                    <button onClick={r.onRestDown} style={css(`width:36px;height:36px;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>−</button>
-                    <span style={css(`font-size:15px;font-weight:700`)}>{r.restLabel}</span>
-                    <button onClick={r.onRestUp} style={css(`width:36px;height:36px;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>+</button>
+                    <button onClick={r.onRestDown} style={css(`width:32px;height:32px;flex-shrink:0;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>−</button>
+                    <span style={css(`font-size:15px;font-weight:700;white-space:nowrap`)}>{r.restLabel}</span>
+                    <button onClick={r.onRestUp} style={css(`width:32px;height:32px;flex-shrink:0;border:none;background:none;color:#F5F1E6;font-size:17px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>+</button>
                   </div>
                 </div>
               </div>
@@ -1307,15 +1307,14 @@ class App extends React.Component {
                   <Pressable key={sp.key} onClick={sp.onTap} activeStyle={css(`transform:scale(0.9)`)} style={css(`flex:1;min-width:44px;height:40px;border-radius:14px;border:1.5px solid ${sp.border};background:${sp.bg};box-shadow:${sp.shadow};cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:800;color:${sp.fg};transition:all .18s ease`)}>{sp.content}</Pressable>
                 ))}
               </div>
-              <div style={css(`display:flex;align-items:center;gap:8px;margin-top:11px`)}>
-                <div style={css(`display:flex;align-items:center;gap:2px;background:rgba(10,8,16,.35);border:1px solid rgba(255,255,255,.08);border-radius:19px;padding:4px`)}>
-                  <button onClick={w.onLoadDown} style={css(`width:44px;height:44px;border:none;background:none;color:#F5F1E6;font-size:19px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>−</button>
-                  <input value={w.load} onChange={w.onLoad} inputMode="decimal" style={css(`width:52px;text-align:center;background:none;border:none;font-size:16px;font-weight:800;color:#F5F1E6;padding:0`)} />
-                  <button onClick={w.onLoadUp} style={css(`width:44px;height:44px;border:none;background:none;color:#F5F1E6;font-size:19px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>+</button>
+              <div style={css(`display:flex;align-items:center;gap:8px;row-gap:8px;margin-top:11px;flex-wrap:wrap`)}>
+                <div style={css(`display:flex;align-items:center;gap:2px;background:rgba(10,8,16,.35);border:1px solid rgba(255,255,255,.08);border-radius:19px;padding:4px;flex-shrink:0`)}>
+                  <button onClick={w.onLoadDown} style={css(`width:40px;height:40px;border:none;background:none;color:#F5F1E6;font-size:19px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>−</button>
+                  <input value={w.load} onChange={w.onLoad} inputMode="decimal" style={css(`width:44px;text-align:center;background:none;border:none;font-size:16px;font-weight:800;color:#F5F1E6;padding:0`)} />
+                  <button onClick={w.onLoadUp} style={css(`width:40px;height:40px;border:none;background:none;color:#F5F1E6;font-size:19px;font-weight:700;cursor:pointer;padding:0;line-height:1`)}>+</button>
                 </div>
-                <span style={css(`font-size:12.5px;font-weight:700;color:rgba(245,241,230,.55)`)}>kg</span>
-                <div style={css(`flex:1`)}></div>
-                <button onClick={w.onSwap} style={css(`height:36px;padding:0 14px;border-radius:18px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.2);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:rgba(245,241,230,.75)`)}>
+                <span style={css(`font-size:12.5px;font-weight:700;color:rgba(245,241,230,.55);flex-shrink:0`)}>kg</span>
+                <button onClick={w.onSwap} style={css(`height:36px;padding:0 14px;border-radius:18px;background:rgba(255,255,255,.09);border:1px solid rgba(255,255,255,.16);box-shadow:inset 0 1px 0 rgba(255,255,255,.2);cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;color:rgba(245,241,230,.75);flex-shrink:0;margin-left:auto`)}>
                   <svg width="13" height="12" viewBox="0 0 14 13"><path d="M3.5 1L1 3.5 3.5 6M1 3.5h9M10.5 7L13 9.5 10.5 12M13 9.5H4" fill="none" stroke="rgba(245,241,230,.75)" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"></path></svg>
                   Trocar
                 </button>
